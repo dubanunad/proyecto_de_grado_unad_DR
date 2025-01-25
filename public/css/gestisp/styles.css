@@ -1,0 +1,42 @@
+body{
+    font-family: Roboto, sans-serif;
+}
+.background-login{
+    /* Tamaño y posición del div */
+    width: 100vw; /* Ancho completo de la ventana */
+    height: 100vh; /* Altura completa de la ventana */
+    position: relative; /* Opcional: útil para posicionar contenido dentro del div */
+
+    /* Imagen de fondo */
+    background-image: url('/public/img/background-gestisp.jpg'); /* Cambia por la ruta de tu imagen */
+    background-size: cover; /* Ajusta la imagen para cubrir todo el div */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+}
+.pagination-container {
+    width: 100%;
+    text-align: center;
+    overflow: hidden; /* Evitar desbordamientos */
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.page-item {
+    list-style: none;
+    margin: 0 5px;
+}
+
+.page-link {
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #007bff;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+}
