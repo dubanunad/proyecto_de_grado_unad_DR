@@ -416,13 +416,21 @@ return [
             'submenu' => [
                 [
                     'text' => 'Almacenes',
-                    'url' => '#',
-                    'icon' => 'fas  fa-receipt',
+                    'route' => 'warehouses.index',
+                    'active' => ['gestisp/warehouses*'],
+                    'icon' => 'fas  fa-warehouse',
+                ],
+                [
+                    'text' => 'Materiales',
+                    'route' => 'materials.index',
+                    'active' => ['gestisp/materials*'],
+                    'icon' => 'fas  fa-hammer',
                 ],
                 [
                     'text' => 'Movimientos',
-                    'url' => '#',
-                    'icon' => 'fas  fa-receipt',
+                    'route' => 'movements.index',
+                    'active' => ['gestisp/movements*'],
+                    'icon' => 'fas  fa-exchange-alt',
                 ],
 
             ],

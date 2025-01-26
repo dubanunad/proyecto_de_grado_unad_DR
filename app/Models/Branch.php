@@ -60,5 +60,10 @@ class Branch extends Model
     {
         return $this->hasMany(CashRegister::class);
     }
+    //Relacion con almacenes
+    public function warehouses()
+    {
+        return $this->hasMany(Warehouse::class);
+    }
 
 }

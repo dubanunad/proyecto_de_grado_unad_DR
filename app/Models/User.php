@@ -105,6 +105,12 @@ class User extends Authenticatable
         return $this->hasMany(CashRegisterTransaction::class);
     }
 
+    //Relación con almacenes
+    public function warehouses()
+    {
+        return $this->hasMany(Warehouse::class);
+    }
+
     //Método para asignar sucursal a un usuario:
 
     public function assignBranch(string $branchName)

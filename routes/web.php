@@ -59,6 +59,19 @@ Route::namespace('App\Http\Controllers')->prefix('gestisp')->group(function () {
 
     // Cajas
     Route::resource('cashRegisters', 'CashRegisterController')->names('cashRegisters');
+
+    //Almacenes
+    Route::resource('warehouses', 'WarehouseController')->names('warehouses');
+
+    //Materiales
+    Route::resource('materials', 'MaterialController')->names('materials');
+
+    //Categorías de materiales
+    Route::resource('categories', 'CategoryController')->names('categories');
+
+    //Movimientos de material
+    Route::resource('movements', 'MaterialMovementController')->names('movements');
+
 });
 
 // Ruta del buscador de clientes
