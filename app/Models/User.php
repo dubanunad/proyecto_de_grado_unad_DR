@@ -111,6 +111,11 @@ class User extends Authenticatable
         return $this->hasMany(Warehouse::class);
     }
 
+    public function materialMovements()
+    {
+        return $this->hasMany(MaterialMovement::class);
+    }
+
     //Método para asignar sucursal a un usuario:
 
     public function assignBranch(string $branchName)

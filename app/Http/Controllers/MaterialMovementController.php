@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inventory;
 use App\Models\Material;
 use App\Models\MaterialMovement;
+use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,7 @@ class MaterialMovementController extends Controller
             'warehouse_origin_id' => 'nullable|exists:warehouses,id',
             'warehouse_destination_id' => 'nullable|exists:warehouses,id',
             'materials.*.serial_numbers.*' => 'nullable|string|required_if:is_equipment,1',
+            'reason' => 'required|string|max:100'
         ]);
 
         DB::transaction(function () use ($request) {
@@ -72,6 +74,8 @@ class MaterialMovementController extends Controller
                             'warehouse_origin_id' => $request->warehouse_origin_id,
                             'warehouse_destination_id' => $request->warehouse_destination_id,
                             'serial_number' => $serialNumber,
+                            'user_id' => auth()->id(),
+                            'reason' => $request->reason,
                         ]);
 
                         // Actualizar inventario
@@ -85,6 +89,8 @@ class MaterialMovementController extends Controller
                         'unit_of_measurement' => $materialData['unit_of_measurement'],
                         'warehouse_origin_id' => $request->warehouse_origin_id,
                         'warehouse_destination_id' => $request->warehouse_destination_id,
+                        'user_id' => auth()->id(),
+                        'reason' => $request->reason,
                     ]);
 
                     // Actualizar inventario

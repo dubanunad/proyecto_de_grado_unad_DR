@@ -16,7 +16,9 @@ class MaterialMovement extends Model
       'quantity',
       'unit_of_measurement',
         'type',
-        'serial_number'
+        'serial_number',
+        'user_id',
+        'reason'
     ];
 
     public function material() {
@@ -29,5 +31,9 @@ class MaterialMovement extends Model
 
     public function warehouseDestination() {
         return $this->belongsTo(Warehouse::class, 'warehouse_destination_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
