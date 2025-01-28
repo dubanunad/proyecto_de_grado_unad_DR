@@ -14,6 +14,7 @@ class Inventory extends Model
         'material_id',
         'quantity',
         'unit_of_measurement',
+        'serial_number'
     ];
 
     public function warehouse() {

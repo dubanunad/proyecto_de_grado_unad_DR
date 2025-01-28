@@ -23,6 +23,14 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            @foreach($errors->all() as $error)
+                {{ $error }}<br>
+            @endforeach
+        </div>
+    @endif
+
     <div class="card p-3">
         <form action="{{ route('movements.store') }}" method="POST" id="movementForm">
             @csrf
@@ -61,7 +69,7 @@
                 <div class="form-group col-md-12">
                     <label for="reason">Motivo del movimiento</label>
                     <select name="reason" id="reason" class="form-control" required>
-                        <option value="">Seleccione un motivo</option>
+                        <option value="">Seleccione...</option>
                         <option value="Compra" class="option-Entrada">Entrada por Compra de materiales</option>
                         <option value="Inicial" class="option-Entrada">Entrada por Inventario inicial</option>
                         <option value="Devolucion" class="option-Entrada">Entrada por Devolución de materiales</option>
@@ -123,6 +131,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        <small id="available-quantity-text" class="text-info mt-1" style="display: none;">
+                            Cantidad disponible: <span id="available-quantity">0</span>
+                        </small>
                     </div>
 
                     <div class="form-group">
@@ -133,7 +144,7 @@
                     <div class="form-group">
                         <label>Unidad de Medida</label>
                         <select id="modal-unit-of-measurement" class="form-control" required>
-                            <option value="">Seleccione una unidad</option>
+                            <option value="">Seleccione...</option>
                             <option value="Unidades">Unidades</option>
                             <option value="Metros">Metros</option>
                             <option value="Litros">Litros</option>
@@ -141,7 +152,15 @@
                         </select>
                     </div>
 
-                    <div id="modal-serial-numbers-container" style="display:none;"></div>
+                    <div id="modal-serial-numbers-container" style="display:none;">
+                        <label for="serial-number-select">Números de Serie Disponibles</label>
+                        <select id="serial-number-select" class="form-control" multiple>
+                            <!-- Números de serie disponibles se agregarán aquí -->
+                        </select>
+                        <ul id="serial-number-list" style="list-style-type: none; padding: 0; margin-top: 10px;">
+                            <!-- Lista de números de serie disponibles se agregarán aquí -->
+                        </ul>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -154,161 +173,11 @@
 
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 @endsection
 
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            let materialIndex = 0;
-
-            // Inicializar Select2
-            function initSelect2() {
-                $('.material-select').select2({
-                    placeholder: "Buscar material",
-                    allowClear: true,
-                    templateResult: formatMaterial
-                });
-            }
-            initSelect2();
-
-            // Elementos del DOM
-            const typeSelect = $('#type');
-            const warehouseOriginGroup = $('#warehouse-origin-group');
-            const warehouseDestinationGroup = $('#warehouse-destination-group');
-            const materialsTable = $('#materials-table tbody');
-            const openModalBtn = $('#open-modal-btn');
-            const addMaterialModalBtn = $('#add-material-modal-btn');
-            const reasonSelect = $('#reason');
-
-            // Manejar visibilidad de almacenes y opciones de motivo
-            typeSelect.on('change', function() {
-                const selectedType = $(this).val();
-                warehouseOriginGroup.hide();
-                warehouseDestinationGroup.hide();
-                reasonSelect.find('option').hide().prop('disabled', true);
-                reasonSelect.find('option[value=""]').show().prop('disabled', false);
-
-                switch(selectedType) {
-                    case 'Entrada':
-                        warehouseDestinationGroup.show();
-                        reasonSelect.find('.option-Entrada').show().prop('disabled', false);
-                        break;
-                    case 'Salida':
-                        warehouseOriginGroup.show();
-                        reasonSelect.find('.option-Salida').show().prop('disabled', false);
-                        break;
-                    case 'Transferencia':
-                        warehouseOriginGroup.show();
-                        warehouseDestinationGroup.show();
-                        reasonSelect.find('.option-Transferencia').show().prop('disabled', false);
-                        break;
-                }
-            });
-
-            // Abrir modal de agregar material
-            openModalBtn.on('click', function() {
-                $('#materialModal').modal('show');
-            });
-
-            // Agregar material desde el modal
-            addMaterialModalBtn.on('click', function() {
-                const materialId = $('#modal-material-select').val();
-                const materialName = $('#modal-material-select option:selected').data('name');
-                const quantity = $('#modal-quantity').val();
-                const unitOfMeasurement = $('#modal-unit-of-measurement').val();
-                const isEquipment = $('#modal-material-select option:selected').data('is-equipment') === 1;
-                const serialNumbersContainer = $('#modal-serial-numbers-container');
-                const serialNumbers = [];
-
-                if (isEquipment) {
-                    serialNumbersContainer.find('input').each(function() {
-                        serialNumbers.push($(this).val());
-                    });
-                }
-
-                // Añadir fila a la tabla
-                const newRow = `
-                    <tr data-index="${materialIndex}">
-                        <td>
-                            <input type="hidden" name="materials[${materialIndex}][material_id]" value="${materialId}">
-                            ${materialName}
-                        </td>
-                        <td>
-                            <input type="hidden" name="materials[${materialIndex}][quantity]" value="${quantity}">
-                            ${quantity}
-                        </td>
-                        <td>
-                            <input type="hidden" name="materials[${materialIndex}][unit_of_measurement]" value="${unitOfMeasurement}">
-                            ${unitOfMeasurement}
-                        </td>
-                        <td>
-                            ${isEquipment ? serialNumbers.join(', ') : 'N/A'}
-                            ${isEquipment ? serialNumbers.map((sn, i) => `<input type="hidden" name="materials[${materialIndex}][serial_numbers][${i}]" value="${sn}">`).join('') : ''}
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-sm remove-material-btn">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-
-                materialsTable.append(newRow);
-                materialIndex++;
-                $('#materialModal').modal('hide');
-                $('#materialModal').find('input, select').val('');
-                serialNumbersContainer.hide().empty();
-            });
-
-            // Eliminar material de la tabla
-            materialsTable.on('click', '.remove-material-btn', function() {
-                $(this).closest('tr').remove();
-            });
-
-            // Mostrar campos de número de serie si es equipo
-            $('#modal-material-select').on('change', function() {
-                const isEquipment = $(this).find('option:selected').data('is-equipment') === 1;
-                const serialNumbersContainer = $('#modal-serial-numbers-container');
-
-                if (isEquipment) {
-                    serialNumbersContainer.show();
-                } else {
-                    serialNumbersContainer.hide().empty();
-                }
-            });
-
-            // Generar campos de número de serie basados en la cantidad
-            $('#modal-quantity').on('change', function() {
-                const quantity = $(this).val();
-                const isEquipment = $('#modal-material-select option:selected').data('is-equipment') === 1;
-                const serialNumbersContainer = $('#modal-serial-numbers-container');
-
-                if (isEquipment) {
-                    serialNumbersContainer.empty();
-                    for (let i = 0; i < quantity; i++) {
-                        serialNumbersContainer.append(`
-                            <div class="form-group">
-                                <label>Número de Serie #${i + 1}</label>
-                                <input type="text" class="form-control serial-number-input" required>
-                            </div>
-                        `);
-                    }
-                } else {
-                    serialNumbersContainer.hide().empty();
-                }
-            });
-
-            // Formato de material en Select2
-            function formatMaterial(material) {
-                if (!material.id) return material.text;
-                return $(`
-                    <span>
-                        ${material.text}
-                        ${material.element.getAttribute('data-is-equipment') === '1' ?
-                    '<small class="text-muted">(Equipo)</small>' :
-                    '<small class="text-muted">(Material)</small>'}
-                    </span>
-                `);
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/resources/js/movements/movements.js"></script>
 @endsection
