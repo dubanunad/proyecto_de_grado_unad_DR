@@ -115,6 +115,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(MaterialMovement::class);
     }
+    public function technicalOrders(){
+        return $this->hasMany(TechnicalOrder::class, 'created_by');
+    }
+
+    // Relación con órdenes técnicas asignadas
+    public function assignedTechnicalOrders()
+    {
+        return $this->hasMany(TechnicalOrder::class, 'user_assigned');
+    }
+
+    // Relación con verificaciones de órdenes técnicas
+    public function technicalOrderVerifications()
+    {
+        return $this->hasMany(TechnicalOrderVerification::class, 'verified_by');
+    }
 
     //Método para asignar sucursal a un usuario:
 

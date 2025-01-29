@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Invoice;
 use App\Models\Plan;
+use App\Models\TechnicalOrder;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -130,9 +131,10 @@ class ContractController extends Controller
                 ->simplePaginate(6);
         $additionalCharges = AditionalCharge::where('contract_id', $contract->id)
             ->simplePaginate(6);
+        $technicalOrders = TechnicalOrder::where('contract_id', $contract->id)->simplePaginate(6);
 
         // Devolver la vista con los datos necesarios
-        return view('gestisp.contracts.show', compact('branches', 'clients', 'plans', 'users', 'contract', 'invoices', 'additionalCharges'));
+        return view('gestisp.contracts.show', compact('branches', 'clients', 'plans', 'users', 'contract', 'invoices', 'additionalCharges', 'technicalOrders'));
     }
 
     /**

@@ -9,6 +9,18 @@
 @section('content')
 
     @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if(session('success'))
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -101,7 +113,7 @@
                     <h3><i class="fas fa-location-arrow"></i> Acciones con el contrato</h3>
                 </div>
                 <div class="card-body text-center">
-                    <a href="" class="btn btn-info mb-1 mt-1 col-8 col-md-3" title="Crear incidencia a contrato">Crear orden técnica</a>
+                    <a href="{{ route('technicals_orders.create', $contract) }}" class="btn btn-info mb-1 mt-1 col-8 col-md-3" title="Crear incidencia a contrato">Crear orden técnica</a>
                     <a href="" class="btn btn-warning mb-1 mt-1 col-8 col-md-3" title="Modificar datos del contrato">Modificar información</a>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-success mb-1 mt-1 col-8 col-md-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -255,7 +267,34 @@
                             <div class="tab-pane fade" id="operation-history" role="tabpanel" aria-labelledby="operation-history-tab">
                                 <div class="mt-3">
                                     <h4>Historial de Operaciones</h4>
-                                    <p>Aquí se mostrará el historial de operaciones relacionadas con el contrato.</p>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <tr>
+                                                <th>Número de orden</th>
+                                                <th>Tipo de orden</th>
+                                                <th>Detalle de orden</th>
+                                                <th>Comentario inicial</th>
+                                                <th>Técnico asignado</th>
+                                                <th>Fecha de creación</th>
+                                                <th>Creada por</th>
+                                                <th>Estado</th>
+                                                <th></th>
+                                            </tr>
+                                            @foreach($technicalOrders as $technicalOrder)
+                                                <tr>
+                                                    <td>{{ $technicalOrder->id }}</td>
+                                                    <td>{{ $technicalOrder->type }}</td>
+                                                    <td>{{ $technicalOrder->detail }}</td>
+                                                    <td>{{ $technicalOrder->initial_comment }}</td>
+                                                    <td>{{ $technicalOrder->assignedUser->name ?? 'N/A'}} {{ $technicalOrder->assignedUser->last_name ?? 'N/A'}}</td>
+                                                    <td>{{ $technicalOrder->created_at }}</td>
+                                                    <td>{{ $technicalOrder->createdBy->name }} {{ $technicalOrder->createdBy->last_name }}</td>
+                                                    <td>{{ $technicalOrder->status }}</td>
+                                                    <td><a href="" class="btn btn-primary">Ver detalles</a></td>
+                                                </tr>
+                                            @endforeach
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 

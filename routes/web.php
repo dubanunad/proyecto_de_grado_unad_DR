@@ -9,6 +9,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MaterialMovementController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\TechnicalOrderController;
 use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
@@ -127,3 +128,6 @@ Route::get('movements/history', [MaterialMovementController::class, 'history'])-
 //Exportar historial de movimientos en pdf y excel
 Route::get('materials/movements/history/pdf', [MaterialMovementController::class, 'exportMovementsPDF'])->name('movements.pdf');
 Route::get('materials/movements/history/excel', [MaterialMovementController::class, 'export'])->name('movements.excel');
+//Ruta para la creación de una orden tecnica desde el contrato
+Route::get('technicals_orders/create/{contract}', [TechnicalOrderController::class, 'create'])->name('technicals_orders.create');
+Route::post('technicals_orders/store', [TechnicalOrderController::class, 'store'])->name('technicals_orders.store');
