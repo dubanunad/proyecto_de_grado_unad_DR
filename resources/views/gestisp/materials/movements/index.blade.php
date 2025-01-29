@@ -169,6 +169,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para mostrar el PDF -->
+    @if(session('pdfPath'))
+        <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pdfModalLabel">Resumen del Movimiento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe src="{{ asset('storage/' . basename(session('pdfPath'))) }}" width="100%" height="500px"></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ asset('storage/' . basename(session('pdfPath'))) }}" class="btn btn-primary" target="_blank">Guardar</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @section('css')
@@ -180,4 +203,12 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/resources/js/movements/movements.js"></script>
+
+    <script>
+        @if(session('pdfPath'))
+        $(document).ready(function() {
+            $('#pdfModal').modal('show');
+        });
+        @endif
+    </script>
 @endsection

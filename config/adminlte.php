@@ -429,8 +429,14 @@ return [
                 [
                     'text' => 'Movimientos',
                     'route' => 'movements.index',
-                    'active' => ['gestisp/movements*'],
+                    'active' => ['gestisp/movements/index'],
                     'icon' => 'fas  fa-exchange-alt',
+                ],
+                [
+                    'text' => 'Historial de movimientos',
+                    'route' => 'movements.history',
+                    'active' => ['gestisp/movements/history'],
+                    'icon' => 'fas  fa-history',
                 ],
 
             ],

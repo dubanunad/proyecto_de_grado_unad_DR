@@ -43,7 +43,11 @@
                         <tr>
                             <td>{{ $warehouse->description }}</td>
                             <td>{{ $warehouse->user->name ?? 'N/A'}} {{ $warehouse->user->last_name ?? 'N/A'}}</td>
-                            <td class="text-right"><a href="{{route('warehouses.edit', $warehouse)}}" class="btn btn-warning">Editar</a></td>
+                            <td></td>
+                            <td class="text-right">
+                                <a class="btn btn-primary" href="{{ route('warehouses.show', $warehouse) }}">Ver inventario</a>
+                                <a href="{{route('warehouses.edit', $warehouse)}}" class="btn btn-warning">Editar</a>
+                            </td>
                         </tr>
 
                     @endforeach

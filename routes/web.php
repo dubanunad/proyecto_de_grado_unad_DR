@@ -9,6 +9,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MaterialMovementController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -118,3 +119,11 @@ Route::get('cashRegisters/transactions/export-excel', [CashRegisterTransactionCo
 //Movimiento de material (consulta SN)
 Route::get('inventories/{warehouse}/materials/{material}/serial-numbers', [MaterialMovementController::class, 'getAvailableSerialNumbers'])->name('movements.query_sn');
 Route::get('inventories/{warehouse}/materials/{material}/quantity', [MaterialMovementController::class, 'getAvailableQuantity'])->name('movements.material_quantity');;
+//Pdf de inventarios
+Route::get('/warehouse/{warehouse}/pdf', [WarehouseController::class, 'generatePdf'])->name('warehouse.pdf');
+//Historial de movimientos de almacen
+Route::get('materials/movements/history', [MaterialMovementController::class, 'history'])->name('movements.history');
+Route::get('movements/history', [MaterialMovementController::class, 'history'])->name('movements.history_data');
+//Exportar historial de movimientos en pdf y excel
+Route::get('materials/movements/history/pdf', [MaterialMovementController::class, 'exportMovementsPDF'])->name('movements.pdf');
+Route::get('materials/movements/history/excel', [MaterialMovementController::class, 'export'])->name('movements.excel');

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialsMovementsExport;
 use App\Models\Inventory;
 use App\Models\Material;
 use App\Models\MaterialMovement;
 use App\Models\User;
 use App\Models\Warehouse;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -51,7 +53,8 @@ class MaterialMovementController extends Controller
 
             \Log::info('Validación pasada correctamente');
 
-            $result = DB::transaction(function () use ($request) {
+            $movements = [];
+            $result = DB::transaction(function () use ($request, &$movements) {
                 try {
                     foreach ($request->materials as $materialData) {
                         \Log::info('Procesando material', ['material_data' => $materialData]);
@@ -129,6 +132,8 @@ class MaterialMovementController extends Controller
                                     $materialData['unit_of_measurement'],
                                     $serialNumber
                                 );
+
+                                $movements[] = $movement;
                             }
                         } else {
                             \Log::info('Procesando material sin números de serie');
@@ -155,6 +160,8 @@ class MaterialMovementController extends Controller
                                 $quantity,
                                 $materialData['unit_of_measurement']
                             );
+
+                            $movements[] = $movement;
                         }
                     }
 
@@ -169,7 +176,18 @@ class MaterialMovementController extends Controller
             });
 
             \Log::info('Movimiento completado exitosamente');
-            return redirect()->route('movements.index')->with('success-create', 'Movimiento registrado exitosamente.');
+
+            // Generar el PDF utilizando la vista
+            $pdf = Pdf::loadView('gestisp.materials.movements.pdf_summary', compact('movements'));
+
+            // Guardar el PDF en un archivo temporal
+            $pdfPath = storage_path('app/public/movimiento_' . time() . '.pdf');
+            $pdf->save($pdfPath);
+
+            return redirect()->route('movements.index')->with([
+                'success-create' => 'Movimiento registrado exitosamente.',
+                'pdfPath' => $pdfPath
+            ]);
 
         } catch (\Exception $e) {
             \Log::error('Error al procesar el movimiento', [
@@ -326,6 +344,81 @@ class MaterialMovementController extends Controller
         }
 
         return response()->json(['quantity' => $quantity]);
+    }
+
+    //Mostrar historial de movimientos de almacén:
+
+    public function history(Request $request)
+    {
+        // Inicializar la consulta base con las relaciones necesarias
+        $query = MaterialMovement::with(['warehouseOrigin', 'warehouseDestination', 'material', 'user']);
+
+        // Inicializar la consulta base con las relaciones necesarias
+        $query = MaterialMovement::with(['warehouseOrigin', 'warehouseDestination', 'material', 'user']);
+
+        // Aplicar filtro por campo específico si se ha establecido
+        if ($request->filled('filter_field') && $request->filled('filter_value')) {
+            $query->where($request->filter_field, 'LIKE', "%{$request->filter_value}%");
+        }
+
+        // Aplicar filtro de rango de fechas si se han establecido
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Aplicar paginación
+        $perPage = $request->input('per_page', 12);
+        $movements = $query->orderBy('created_at', 'desc')->simplePaginate($perPage);
+
+        // Retornar la vista con los movimientos filtrados
+        return view('gestisp.materials.movements.history', compact('movements'));
+    }
+
+    //Exportar filtrado en PDF
+    public function exportMovementsPDF(Request $request)
+    {
+        // Inicializar la consulta base con las relaciones necesarias
+        $query = MaterialMovement::with(['warehouseOrigin', 'warehouseDestination', 'material', 'user']);
+
+        if (session()->has('branch_id')) {
+            $query->whereHas('warehouseDestination', function ($query) {
+                $query->where('branch_id', session('branch_id'));
+            });
+        }
+
+
+        // Aplicar filtro por campo específico si se ha establecido
+        if ($request->filled('filter_field') && $request->filled('filter_value')) {
+            $query->where($request->filter_field, 'LIKE', "%{$request->filter_value}%");
+        }
+
+        // Aplicar filtro de rango de fechas si se han establecido
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Obtener los movimientos filtrados sin paginación
+        $movements = $query->orderBy('created_at', 'desc')->get();
+
+        // Generar el PDF utilizando la vista
+        $pdf = Pdf::loadView('gestisp.materials.movements.pdf', compact('movements'));
+
+        // Descargar el PDF con un nombre de archivo adecuado
+        return $pdf->download('historial_movimientos.pdf');
+    }
+
+    //Exportar todos los movimientos en PDF
+
+    public function export()
+    {
+        //Función para exportar los movimientos a un excel
+        return (new MaterialsMovementsExport)->download('listado_de_movimientos_de_almacen.xlsx');
     }
     /**
      * Display the specified resource.

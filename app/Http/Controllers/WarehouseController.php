@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inventory;
 use App\Models\User;
 use App\Models\Warehouse;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class WarehouseController extends Controller
 {
@@ -50,12 +53,73 @@ class WarehouseController extends Controller
             ->with('success-create', 'El almacén se ha creado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    //Mostrar los inventarios
+
     public function show(Warehouse $warehouse)
     {
-        //
+        $inventories = Inventory::where('warehouse_id', $warehouse->id)
+            ->with('material')
+            ->get()
+            ->groupBy('material_id')
+            ->map(function ($items) {
+                $material = $items->first()->material;
+                $quantity = $items->sum('quantity');
+                $unit = $items->first()->unit_of_measurement;
+                $sns = $items->pluck('serial_number')->filter()->toArray();
+
+                return [
+                    'material' => $material,
+                    'quantity' => $quantity,
+                    'unit_of_measurement' => $unit,
+                    'sns' => $sns
+                ];
+            });
+
+        // Paginación manual
+        $page = request()->get('page', 1);
+        $perPage = 12;
+        $paginatedData = new LengthAwarePaginator(
+            $inventories->slice(($page - 1) * $perPage, $perPage)->values(),
+            $inventories->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
+
+        return view('gestisp.warehouses.show', [
+            'inventoriesData' => $paginatedData,
+            'warehouse' => $warehouse
+        ]);
+    }
+    //Exportar inventario en PDF
+    public function generatePdf(Warehouse $warehouse)
+    {
+        $inventories = Inventory::where('warehouse_id', $warehouse->id)
+            ->with('material')
+            ->get()
+            ->groupBy('material_id')
+            ->map(function ($items) {
+                $material = $items->first()->material;
+                $quantity = $items->sum('quantity');
+                $unit = $items->first()->unit_of_measurement;
+                $sns = $items->pluck('serial_number')->filter()->toArray(); // Lista de SN
+
+                return [
+                    'material' => $material->name, // Nombre del material
+                    'quantity' => $quantity, // Cantidad total
+                    'unit_of_measurement' => $unit, // Unidad de medida
+                    'sns' => implode(', ', $sns) // Convertir SNs en una lista separada por comas
+                ];
+            });
+
+        $data = [
+            'inventoriesData' => $inventories,
+            'warehouse' => $warehouse
+        ];
+
+        $pdf = Pdf::loadView('gestisp.warehouses.pdf', $data);
+
+        return $pdf->download('Inventario_'.$warehouse->description.'.pdf');
     }
 
     /**
