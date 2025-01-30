@@ -448,7 +448,8 @@ return [
             'submenu' => [
                 [
                     'text' => 'Órdenes ténicas',
-                    'url' => '#',
+                    'route' => 'technicals_orders.index',
+                    'active' => ['gestisp/technicals_orders*'],
                     'icon' => 'fas  fa-receipt',
                 ],
                 [

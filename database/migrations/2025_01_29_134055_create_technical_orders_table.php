@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_assigned')->nullable(); // Técnico asignado
             $table->unsignedBigInteger('created_by')->nullable(); // Usuario que crea la orden
             $table->enum('type', ['Servicio', 'Incidencia']); // Tipo de orden
-            $table->enum('status', ['pending', 'assigned', 'rejected', 'pre_finalized', 'closed'])->default('pending');
+            $table->enum('status', ['Pendiente', 'Asignada', 'Rechazada', 'Prefinalizada', 'Cerrada'])->default('Pendiente');
             $table->text('rejection_reason')->nullable(); // Motivo del rechazo
             $table->text('detail'); // Detalles de la orden
             $table->text('observations_technical')->nullable(); // Observaciones del técnico
