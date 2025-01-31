@@ -133,3 +133,8 @@ Route::get('technicals_orders/create/{contract}', [TechnicalOrderController::cla
 Route::post('technicals_orders/store', [TechnicalOrderController::class, 'store'])->name('technicals_orders.store');
 Route::get('technicals_orders/index', [TechnicalOrderController::class, 'index'])->name('technicals_orders.index');
 Route::put('technicals_orders/{technicalOrder}', [TechnicalOrderController::class, 'update'])->name('technicals_orders.update');
+//órdenes exclusivasd del usuario asignado
+Route::get('technicals_orders/my_technical_orders', [TechnicalOrderController::class, 'myTechnicalOrders'])->name('technicals_orders.my_technical_orders');
+//PRocesar orden
+Route::post('/technicals_orders/process/{id}', [TechnicalOrderController::class, 'processOrder'])->name('technicals_orders.process');
+Route::get('technicals_orders/get-serial-numbers/{materialId}', [TechnicalOrderController::class, 'getSerialNumbers']);

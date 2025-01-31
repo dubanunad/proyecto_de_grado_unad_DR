@@ -453,9 +453,15 @@ return [
                     'icon' => 'fas  fa-receipt',
                 ],
                 [
-                    'text' => 'Control',
+                    'text' => 'Mis Órdenes',
+                    'route' => 'technicals_orders.my_technical_orders',
+                    'active' => ['gestisp/technicals_orders*'],
+                    'icon' => 'fas  fa-wrench',
+                ],
+                [
+                    'text' => 'Verificación de órdenes',
                     'url' => '#',
-                    'icon' => 'fas  fa-hand-holding-usd',
+                    'icon' => 'fas  fa-check-square',
                 ],
             ],
         ],

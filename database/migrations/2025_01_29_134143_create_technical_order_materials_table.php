@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('technical_order_materials', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('technical_order_id');
-            $table->unsignedBigInteger('material_id');
-            $table->integer('quantity'); // Cantidad de material
+            $table->unsignedBigInteger('material_id')->nullable();
+            $table->integer('quantity')->nullable(); // Cantidad de material
             $table->string('serial_number')->nullable(); // SN si aplica
             $table->timestamps(); // created_at
             // Claves foráneas

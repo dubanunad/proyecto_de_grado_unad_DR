@@ -290,7 +290,93 @@
                                                     <td>{{ $technicalOrder->created_at }}</td>
                                                     <td>{{ $technicalOrder->createdBy->name }} {{ $technicalOrder->createdBy->last_name }}</td>
                                                     <td>{{ $technicalOrder->status }}</td>
-                                                    <td><a href="" class="btn btn-primary">Ver detalles</a></td>
+                                                    <td>
+                                                        <!-- Button trigger modal -->
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailModal{{ $technicalOrder->id }}">
+                                                            Ver detalles
+                                                        </button>
+
+                                                        <div class="modal fade" id="detailModal{{ $technicalOrder->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">Detalles de orden {{ $technicalOrder->id }}</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="">
+                                                                            <div class="mt-2">
+                                                                                <p><strong>Datos del cliente</strong></p>
+                                                                            </div>
+                                                                            <div>Cliente: {{ $technicalOrder->contract->client->name }} {{ $technicalOrder->contract->client->last_name }}</div>
+                                                                            <div>Barrio y dirección: {{ $technicalOrder->contract->neighborhood }} {{ $technicalOrder->contract->address }}</div>
+                                                                            <div>Detalles de plan: {{ $technicalOrder->contract->plan->name }}</div>
+                                                                            <div class="mt-2">
+                                                                                <p><strong>Datos de orden</strong></p>
+                                                                            </div>
+                                                                            <div>Tipo de orden: {{ $technicalOrder->type }}</div>
+                                                                            <div>Detalle: {{ $technicalOrder->detail }}</div>
+                                                                            <div>Detalle: {{ $technicalOrder->detail }}</div>
+                                                                            <div>Comentario inicial: {{ $technicalOrder->initial_comment }}</div>
+                                                                            <div class="mt-2">
+                                                                                <p><strong>Datos de solución</strong></p>
+                                                                            </div>
+                                                                            <div>Observaciones técnicas: {{ $technicalOrder->observations_technical }}</div>
+                                                                            <div>Observaciones del cliente: {{ $technicalOrder->client_observation }}</div>
+                                                                            <div>Solución: {{ $technicalOrder->solution }}</div>
+                                                                            <div>Fecha de creación: {{ $technicalOrder->created_at }}</div>
+                                                                            <div>Última acción: {{ $technicalOrder->updated_at }}</div>
+                                                                            <div class="mt-2">
+                                                                                <p><strong>Fotos</strong></p>
+                                                                                <div class="card">
+                                                                                    <div id="carouselExample" class="carousel slide">
+                                                                                        <div class="carousel-inner">
+                                                                                            <div class="carousel-item active">
+                                                                                                <img src="https://i.blogs.es/351454/conector/650_1200.jpg" class="d-block w-100" alt="...">
+                                                                                            </div>
+                                                                                            <div class="carousel-item">
+                                                                                                <img src="https://www.adslzone.net/app/uploads-adslzone.net/2023/01/ONT-2.jpg" class="d-block w-100" alt="...">
+                                                                                            </div>
+                                                                                            <div class="carousel-item">
+                                                                                                <img src="..." class="d-block w-100" alt="...">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                                                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                                            <span class="visually-hidden">Previous</span>
+                                                                                        </button>
+                                                                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                                                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                                            <span class="visually-hidden">Next</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="table-responsive">
+                                                                            <table class="table table-hover">
+                                                                                <tr>
+                                                                                    <th>Material</th>
+                                                                                    <th>Cantidad</th>
+                                                                                    <th>SN</th>
+                                                                                </tr>
+                                                                                @foreach($technicalOrder->materials as $material_to_order)
+                                                                                    <td>{{ $material_to_order->material->name }}</td>
+                                                                                    <td>{{ $material_to_order->quantity }}</td>
+                                                                                    <td>{{ $material_to_order->serial_number }}</td>
+                                                                                @endforeach
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </table>

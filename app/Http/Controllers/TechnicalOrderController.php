@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
+use App\Models\Inventory;
+use App\Models\Material;
 use App\Models\TechnicalOrder;
+use App\Models\TechnicalOrderMaterial;
 use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class TechnicalOrderController extends Controller
@@ -13,7 +19,7 @@ class TechnicalOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, TechnicalOrder $technicalOrder)
     {
         // Obtener los parámetros de filtrado
         $filterField = $request->input('filter_field');
@@ -60,6 +66,8 @@ class TechnicalOrderController extends Controller
             'end_date' => $endDate,
             'per_page' => $perPage,
         ];
+
+
 
         return view('gestisp.technicals_orders.index', compact('technical_orders', 'filters', 'users'));
     }
@@ -120,6 +128,165 @@ class TechnicalOrderController extends Controller
         }
     }
 
+    //Manejar las órdenes del usuario técnico
+
+    public function myTechnicalOrders(TechnicalOrder $technicalOrder){
+
+        // Obtener el ID de la sucursal del usuario en sesión
+        $branchId = session('branch_id');
+
+        // Obtener el almacén de la sucursal
+        $warehouse = Warehouse::where('user_id', Auth::user()->id)->first();
+
+        if ($warehouse) {
+            // Obtener los materiales que tienen inventario en ese almacén
+            $materials = Material::whereHas('inventories', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id)
+                    ->where('quantity', '>', 0); // Solo materiales con cantidad mayor a 0
+            })->with(['inventories' => function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id);
+            }])->get();
+
+            // Totalizar las cantidades para materiales de tipo "equipo"
+            foreach ($materials as $material) {
+                if ($material->is_equipment) {
+                    $totalQuantity = $material->inventories->sum('quantity');
+                    $material->total_quantity = $totalQuantity;
+                } else {
+                    $material->total_quantity = $material->inventories->first()->quantity ?? 0;
+                }
+            }
+        } else {
+            // Si no hay almacén, devolver una colección vacía
+            $materials = collect();
+        }
+
+        $technical_orders = TechnicalOrder::where('branch_id', Session('branch_id'))
+            ->where('user_assigned', Auth::user()->id)
+            ->where('status', 'Asignada')
+            ->simplePaginate(12);
+
+
+        return view('gestisp.technicals_orders.my_technical_orders', compact('technical_orders', 'materials'));
+
+    }
+
+    public function getSerialNumbers($materialId)
+    {
+        // Obtener el almacén del usuario en sesión
+        $warehouse = Warehouse::where('user_id', Auth::user()->id)->first();
+
+        if ($warehouse) {
+            // Obtener los números de serie disponibles para el material en el almacén
+            $serialNumbers = Inventory::where('warehouse_id', $warehouse->id)
+                ->where('material_id', $materialId)
+                ->whereNotNull('serial_number')
+                ->pluck('serial_number');
+
+            return response()->json($serialNumbers);
+        }
+
+        return response()->json([]);
+    }
+
+    public function processOrder(Request $request, $id)
+    {
+        try {
+            // Validar la solicitud
+            $request->validate([
+                'observations_technical' => 'required|string',
+                'client_observation' => 'required|string',
+                'solution' => 'required|string',
+                'material_id' => 'nullable|array',
+                'quantity' => 'nullable|array',
+                'serial_number' => 'nullable|array',
+            ]);
+
+            // Iniciar transacción
+            DB::beginTransaction();
+
+            // Obtener la orden técnica
+            $technicalOrder = TechnicalOrder::findOrFail($id);
+
+            // Obtener el almacén del usuario en sesión
+            $warehouse = Warehouse::where('user_id', Auth::user()->id)->first();
+
+            if (!$warehouse) {
+                throw new \Exception('No se encontró un almacén asociado al usuario.');
+            }
+
+            // Actualizar la orden técnica
+            $technicalOrder->update([
+                'observations_technical' => $request->input('observations_technical'),
+                'client_observation' => $request->input('client_observation'),
+                'solution' => $request->input('solution'),
+                'status' => 'Prefinalizada',
+            ]);
+
+            // Procesar los materiales
+            if ($request->has('material_id')) {
+                foreach ($request->input('material_id') as $index => $materialId) {
+                    if (empty($materialId)) continue; // Saltar entradas vacías
+
+                    $quantity = $request->input('quantity')[$index];
+                    $serialNumber = $request->input('serial_number')[$index] ?? null;
+
+                    // Obtener el inventario actual del material
+                    $inventory = Inventory::where('warehouse_id', $warehouse->id)
+                        ->where('material_id', $materialId)
+                        ->when($serialNumber, function ($query) use ($serialNumber) {
+                            return $query->where('serial_number', $serialNumber);
+                        })
+                        ->first();
+
+                    if (!$inventory) {
+                        throw new \Exception('No se encontró inventario para el material seleccionado.');
+                    }
+
+                    // Verificar si hay suficiente stock
+                    if ($inventory->quantity < $quantity) {
+                        throw new \Exception("No hay suficiente stock para el material ID: {$materialId}");
+                    }
+
+                    // Crear el registro en technical_orders_materials
+                    $technicalOrder->materials()->create([
+                        'material_id' => $materialId,
+                        'quantity' => $quantity,
+                        'serial_number' => $serialNumber,
+                    ]);
+
+                    // Actualizar el inventario
+                    $inventory->quantity -= $quantity;
+                    $inventory->save();
+
+                    // Si es un equipo y tiene número de serie, actualizar o eliminar el registro específico
+                    if ($serialNumber) {
+                        if ($quantity == 1) {
+                            $inventory->delete(); // Eliminar el registro si se usa completamente
+                        } else {
+                            throw new \Exception('Los equipos con número de serie solo pueden tener cantidad 1.');
+                        }
+                    }
+                }
+            }
+
+            // Confirmar transacción
+            DB::commit();
+
+            // Redirigir con mensaje de éxito
+            return redirect()->route('technicals_orders.my_technical_orders')
+                ->with('success', 'Orden procesada correctamente.');
+
+        } catch (\Exception $e) {
+            // Revertir cambios en caso de error
+            DB::rollBack();
+
+            // Redirigir con mensaje de error
+            return redirect()->back()
+                ->with('error', 'Error al procesar la orden: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
     /**
      * Display the specified resource.
      */

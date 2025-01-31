@@ -23,4 +23,8 @@ class Material extends Model
     {
         return $this->hasMany(Inventory::class);
     }
+    public function technicalOrders(){
+       return $this->hasMany(TechnicalOrder::class);
+    }
+
 }
