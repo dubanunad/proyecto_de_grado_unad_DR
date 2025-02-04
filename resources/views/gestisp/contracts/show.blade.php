@@ -327,6 +327,7 @@
                                                                             <div>Observaciones del cliente: {{ $technicalOrder->client_observation }}</div>
                                                                             <div>Solución: {{ $technicalOrder->solution }}</div>
                                                                             <div>Fecha de creación: {{ $technicalOrder->created_at }}</div>
+                                                                            <div>Motivo de rechazo por el técnico: {{ $technicalOrder->rejection_reason ?? 'N/A' }}</div>
                                                                             <div>Última acción: {{ $technicalOrder->updated_at }}</div>
                                                                             <div class="mt-2">
                                                                                 <p><strong>Fotos</strong></p>

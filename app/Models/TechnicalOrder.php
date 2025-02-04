@@ -22,6 +22,7 @@ class TechnicalOrder extends Model
         'client_observation',
         'solution',
         'initial_comment',
+        'images',
         'created_by'
     ];
 

@@ -138,3 +138,9 @@ Route::get('technicals_orders/my_technical_orders', [TechnicalOrderController::c
 //PRocesar orden
 Route::post('/technicals_orders/process/{id}', [TechnicalOrderController::class, 'processOrder'])->name('technicals_orders.process');
 Route::get('technicals_orders/get-serial-numbers/{materialId}', [TechnicalOrderController::class, 'getSerialNumbers']);
+//Vista de verificación de ordenes
+Route::get('technicals_orders/verification', [TechnicalOrderController::class, 'orderVerification'])->name('technicals_orders.verification');
+//Actualizar la orden si se cancela o rechaza
+Route::put('technicals_orders/vertification/{technical_order}', [TechnicalOrderController::class, 'verificationOrderProcess'])->name('technical_order.verification_process');
+//Rechazar orden por parte del técnico
+Route::put('technicals_orders/reject/{technical_order}', [TechnicalOrderController::class, 'orderReject'])->name('technical_orders.reject');

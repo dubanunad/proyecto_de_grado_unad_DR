@@ -72,6 +72,89 @@ class TechnicalOrderController extends Controller
         return view('gestisp.technicals_orders.index', compact('technical_orders', 'filters', 'users'));
     }
 
+    //Ver ordenes para verificacion
+
+    public function orderVerification(Request $request){
+
+        /// Obtener los usuarios de la sucursal en sesión
+        $branchId = Session('branch_id');
+        $users = User::whereHas('branches', function ($query) use ($branchId) {
+            $query->where('branch_id', $branchId); // Filtrar por la sucursal en sesión
+        })->get();
+
+        $technical_orders = TechnicalOrder::where('branch_id', $branchId)
+                ->where('status', 'Prefinalizada')
+                ->orderBy('created_at', 'desc')
+                ->simplePaginate(12);
+
+
+
+        return view('gestisp.technicals_orders.verification_orders', compact('technical_orders', 'users'));
+    }
+
+    //Proceso de verificación de orden
+    public function verificationOrderProcess(Request $request, TechnicalOrder $technicalOrder)
+    {
+        // Validar el comentario de verificación
+        $request->validate([
+            'verification_comment' => 'required|string',
+        ]);
+
+        // Obtener el usuario autenticado
+        $user = auth()->user();
+
+        // Determinar la acción (Cerrar o Rechazar)
+        if ($request->has('close_order')) {
+            // Cambiar el estado de la orden a "Cerrado"
+            $technicalOrder->status = 'Cerrada';
+            $technicalOrder->save();
+
+            // Guardar la verificación en la tabla TechnicalOrderVerification
+            $technicalOrder->verifications()->create([
+                'verified_by' => $user->id,
+                'status' => 'Cerrada',
+                'comments' => $request->input('verification_comment'),
+            ]);
+
+            return redirect()->route('technicals_orders.verification')->with('success', 'La orden ha sido cerrada exitosamente.');
+
+        } elseif ($request->has('reject_order')) {
+            // Cambiar el estado de la orden a "Pendiente"
+            $technicalOrder->status = 'Pendiente';
+            $technicalOrder->save();
+
+            // Guardar la verificación en la tabla TechnicalOrderVerification
+            $technicalOrder->verifications()->create([
+                'verified_by' => $user->id,
+                'status' => 'Pendiente',
+                'comments' => $request->input('verification_comment'),
+            ]);
+
+            return redirect()->route('technicals_orders.verification')->with('warning', 'La orden ha sido rechazada y está pendiente de corrección.');
+        }
+
+        // Si no se selecciona ninguna acción, redirigir con un mensaje de error
+        return redirect()->route('technicals_orders.verification')->with('error', 'No se seleccionó ninguna acción.');
+    }
+
+    //Rechazar orden por parte del técnico
+
+    public function orderReject(TechnicalOrder $technicalOrder, Request $request){
+
+        // Validar el motivo del rechazo
+        $request->validate([
+            'reason' => 'required|string',
+        ]);
+
+        // Cambiar el estado de la orden a "Pendiente"
+        $technicalOrder->status = 'Rechazada';
+        $technicalOrder->rejection_reason = $request->input('reason'); // Guardar el motivo del rechazo
+        $technicalOrder->save();
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('technicals_orders.my_technical_orders')->with('success', 'La orden ha sido rechazada.');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

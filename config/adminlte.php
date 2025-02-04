@@ -460,7 +460,8 @@ return [
                 ],
                 [
                     'text' => 'Verificación de órdenes',
-                    'url' => '#',
+                    'route' => 'technicals_orders.verification',
+                    'active' => ['gestisp/technicals_orders*'],
                     'icon' => 'fas  fa-check-square',
                 ],
             ],

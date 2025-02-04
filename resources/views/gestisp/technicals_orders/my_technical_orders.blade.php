@@ -51,15 +51,39 @@
                                 <td>{{ $technical_order->status }}</td>
                                 <td>{{ $technical_order->created_at }}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary col-md-8" title="detalles de la orden">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
+                                    <button class="btn btn-danger mt-2 col-md-8" title="Rechazar orden" data-toggle="modal" data-target="#rejectOrderModal{{ $technical_order->id }}">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
                                     <button class="btn btn-success mt-2 col-md-8" title="Procesar orden" data-toggle="modal" data-target="#processOrderModal{{ $technical_order->id }}">
                                         <i class="fas fa-cogs"></i>
                                     </button>
                                 </td>
                             </tr>
 
+
+                            <!-- Modal para rechazar la orden -->
+                            <div class="modal fade" id="rejectOrderModal{{ $technical_order->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Rechazar orden {{ $technical_order->id }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('technical_orders.reject', $technical_order) }}" method="post">
+                                                @csrf
+                                                @method('put')
+                                                <label for="reason">Motivo del rechazo de la orden</label>
+                                                <textarea name="reason" class="form-control" required></textarea>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary">Rechazar orden</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Modal para procesar la orden -->
                             <div class="modal fade" id="processOrderModal{{ $technical_order->id }}" tabindex="-1" role="dialog" aria-labelledby="processOrderModalLabel{{ $technical_order->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
@@ -115,7 +139,7 @@
                                                         <!-- Input de Cantidad -->
                                                         <div class="form-group">
                                                             <label>Cantidad</label>
-                                                            <input type="number" class="form-control quantity-input" name="quantity[]" min="1" required>
+                                                            <input type="number" class="form-control quantity-input" name="quantity[]" min="1">
                                                         </div>
 
                                                         <!-- Select de Número de Serie (inicialmente oculto) -->
@@ -154,6 +178,14 @@
     </div>
 @endsection
 
+@push('js')
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@endpush
+
 @push('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
@@ -189,6 +221,7 @@
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         $(document).ready(function() {
             // Inicializar Select2 en los selectores existentes
@@ -240,7 +273,7 @@
         </div>
         <div class="form-group">
             <label>Cantidad</label>
-            <input type="number" class="form-control quantity-input" name="quantity[]" min="1" required>
+            <input type="number" class="form-control quantity-input" name="quantity[]" min="1">
         </div>
         <div class="form-group serial-number-container" style="display: none;">
             <label>Número de Serie</label>
