@@ -95,6 +95,10 @@ Route::post('/invoices/generate', [InvoiceController::class, 'generateInvoices']
 
 // Descarga de PDF
 Route::get('/invoices/{id}/download-pdf', [InvoiceController::class, 'downloadInvoicePdf'])->name('invoices.download-pdf');
+//generacion de PDF másivo
+Route::get('invoices/generate_pdf', [InvoiceController::class, 'generatePendingInvoicesPdf'])->name('invoices.generate_max_pdf');
+//Consultar estado de generación de facturas pdf
+Route::get('check-pdf-status', [InvoiceController::class, 'checkPdfStatus'])->name('invoices.check-pdf-status');
 
 // Ruta para exportar contratos a excel
 Route::get('/contracts/export', [ContractController::class, 'export'])->name('contracts.export');

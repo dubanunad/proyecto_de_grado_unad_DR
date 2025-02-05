@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GeneratePendingInvoicesPdf;
 use App\Models\AditionalCharge;
 use App\Models\Contract;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\PdfReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Milon\Barcode\Facades\DNS1DFacade;
 
@@ -254,7 +257,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::with(['contract.client', 'invoice_items'])->findOrFail($id);
 
 
-        $code = '0100'.$invoice->id.'000000'.$invoice->total; // Número único de la factura.
+        $code = '0100' . $invoice->id . '000000' . $invoice->total; // Número único de la factura.
         $codeString = $code;
 
         // Generar la imagen como PNG
@@ -270,7 +273,7 @@ class InvoiceController extends Controller
         $pdf = Pdf::loadView('gestisp.invoices.pdf', compact('invoice', 'barcodeUrl', 'codeString'));
 
         // Configurar tamaño media carta
-        $pdf->setPaper([0, 0 ,612.00, 419.53], 'portrait'); // Medidas en puntos (5.5" x 8.5")
+        $pdf->setPaper([0, 0, 612.00, 419.53], 'portrait'); // Medidas en puntos (5.5" x 8.5")
 
         $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
 
@@ -278,4 +281,40 @@ class InvoiceController extends Controller
         return $pdf->download('factura_' . $invoice->id . '.pdf');
     }
 
+    //PDF Masivo
+    public function generatePendingInvoicesPdf()
+    {
+        $branchId = session('branch_id');
+
+        // Dispatch the job
+        GeneratePendingInvoicesPdf::dispatch($branchId);
+
+        return redirect()->route('invoices.index')
+            ->with('success', 'La generación del PDF de facturas pendientes ha sido encolada. No cierre ni recargue la página hasta ser notificado');
+    }
+
+    public function checkPdfStatus(Request $request)
+    {
+        // Obtener el ID de la sucursal desde la sesión
+        $branchId = session('branch_id');
+
+        // Buscar el último PDF generado para la sucursal
+        $pdfReport = PdfReport::where('branch_id', $branchId)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Devolver la ruta del PDF si está disponible
+        if ($pdfReport) {
+            return response()->json([
+                'pdfPath' => asset("storage/{$pdfReport->pdf_path}"),
+                'timestamp' => $pdfReport->created_at->timestamp,
+            ]);
+        }
+
+        // Devolver un mensaje indicando que el PDF aún no está listo
+        return response()->json([
+            'pdfPath' => null,
+            'message' => 'El PDF aún no está listo.',
+        ]);
+    }
 }
