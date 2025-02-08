@@ -143,6 +143,19 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'technical_order.verification_process', 'description' => 'Procesar verificación de órdenes']);
         Permission::create(['name' => 'technical_orders.reject', 'description' => 'Rechazar órdenes técnicas']);
 
+        //Usuarios
+        Permission::create(['name' => 'users.index', 'description' => 'Ver usuarios']);
+        Permission::create(['name' => 'users.create', 'description' => 'Crear usuarios']);
+        Permission::create(['name' => 'users.edit', 'description' => 'Editar usuarios']);
+        Permission::create(['name' => 'users.destroy', 'description' => 'Eliminar usuarios']);
+
+        //Roles
+        Permission::create(['name' => 'roles.index', 'description' => 'Ver roles']);
+        Permission::create(['name' => 'roles.create', 'description' => 'Crear roles']);
+        Permission::create(['name' => 'roles.edit', 'description' => 'Editar roles']);
+        Permission::create(['name' => 'roles.destroy', 'description' => 'Eliminar roles']);
+
+
         // Asignar permisos a roles
         $super_admin->givePermissionTo(Permission::all());
         $admin->givePermissionTo([

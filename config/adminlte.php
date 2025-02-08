@@ -494,13 +494,17 @@ return [
             'submenu' => [
                 [
                     'text' => 'Usuarios',
-                    'route' => '',
+                    'route' => 'users.index',
                     'icon' => 'fas  fa-users-cog',
+                    'active' => ['gestisp/users*'],
+                    'can' => 'users.index',
                 ],
                 [
                     'text' => 'Roles',
-                    'route' => '',
+                    'route' => 'roles.index',
                     'icon' => 'fas  fa-sliders-h',
+                    'active' => ['gestisp/roles*'],
+                    'can' => 'roles.index',
                 ],
 
             ],

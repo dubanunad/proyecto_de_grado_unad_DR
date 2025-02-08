@@ -75,6 +75,13 @@ Route::namespace('App\Http\Controllers')->prefix('gestisp')->group(function () {
     //Movimientos de material
     Route::resource('movements', 'MaterialMovementController')->names('movements');
 
+    //Usuarios
+    Route::resource('users', 'UserController')->names('users');
+
+    //Roles
+    Route::resource('roles', 'RoleController')->names('roles');
+
+
 });
 
 // Ruta del buscador de clientes
