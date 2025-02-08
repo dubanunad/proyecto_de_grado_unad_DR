@@ -325,18 +325,21 @@ return [
                     'route' => 'branches.index',
                     'active' => ['gestisp/branches*'],
                     'icon' => 'fas  fa-code-branch',
+                    'can' => 'branches.index',
                 ],
                 [
                     'text' => 'Servicios',
                     'route' => 'services.index',
                     'active' => ['gestisp/services*'],
                     'icon' => 'fas  fa-wifi',
+                    'can' => 'services.index',
                 ],
                 [
                     'text' => 'Planes de servicios',
                     'route' => 'plans.index',
                     'active' => ['gestisp/plans*'],
                     'icon' => 'fas  fa-box',
+                    'can' => 'plans.index',
                 ],
             ],
         ],
@@ -350,18 +353,21 @@ return [
                     'route' => 'clients.create',
                     'active' => ['gestisp/clients/create'],
                     'icon' => 'fas  fa-plus-circle',
+                    'can' => 'clients.create',
                 ],
                 [
                     'text' => 'Busqueda de cliente',
                     'route' => 'clients.search',
                     'active' => ['gestisp/clients/search*'],
                     'icon' => 'fas  fa-search',
+                    'can' => 'branches.search',
                 ],
                 [
                     'text' => 'Listado de clientes',
                     'route' => 'contracts.index',
                     'active' => ['gestisp/contracts'],
                     'icon' => 'fas  fa-list',
+                    'can' => 'contracts.index',
                 ],
 
             ],
@@ -375,6 +381,7 @@ return [
                     'text' => 'Facturas',
                     'route' => 'invoices.index',
                     'icon' => 'fas  fa-receipt',
+                    'can' => 'invoices.index',
                 ],
                 [
                     'text' => 'Cobranza',
@@ -385,24 +392,29 @@ return [
                             'route' => 'cashRegisters.index',
                             'active' => ['gestisp/cashRgisters'],
                             'icon' => 'fas  fa-cash-register',
+                            'can' => 'cashRegisters.index',
+
                         ],
                         [
                             'text' => 'Cobrar',
                             'route' => 'payments.search',
                             'active' => ['gestisp/payments/search'],
                             'icon' => 'fas  fa-hand-holding-usd',
+                            'can' => 'payments.search',
                         ],
                         [
                             'text' => 'Movimientos de caja',
                             'route' => 'transactions.index',
                             'active' => ['gestisp/transactions'],
                             'icon' => 'fas  fa-coins',
+                            'can' => 'transactions.index',
                         ],
                         [
                             'text' => 'Registro de pagos',
                             'route' => 'payments.index',
                             'active' => ['gestisp/payments'],
                             'icon' => 'fas  fa-receipt',
+                            'can' => 'payments.index',
                         ],
 
                     ]
@@ -419,24 +431,28 @@ return [
                     'route' => 'warehouses.index',
                     'active' => ['gestisp/warehouses*'],
                     'icon' => 'fas  fa-warehouse',
+                    'can' => 'warehouses.index',
                 ],
                 [
                     'text' => 'Materiales',
                     'route' => 'materials.index',
                     'active' => ['gestisp/materials*'],
                     'icon' => 'fas  fa-hammer',
+                    'can' => 'materials.index',
                 ],
                 [
                     'text' => 'Movimientos',
                     'route' => 'movements.index',
                     'active' => ['gestisp/movements/index'],
                     'icon' => 'fas  fa-exchange-alt',
+                    'can' => 'movements.index',
                 ],
                 [
                     'text' => 'Historial de movimientos',
                     'route' => 'movements.history',
                     'active' => ['gestisp/movements/history'],
                     'icon' => 'fas  fa-history',
+                    'can' => 'movements.history',
                 ],
 
             ],
@@ -451,21 +467,45 @@ return [
                     'route' => 'technicals_orders.index',
                     'active' => ['gestisp/technicals_orders*'],
                     'icon' => 'fas  fa-receipt',
+                    'can' => 'technicals_orders.index',
                 ],
                 [
                     'text' => 'Mis Órdenes',
                     'route' => 'technicals_orders.my_technical_orders',
                     'active' => ['gestisp/technicals_orders*'],
                     'icon' => 'fas  fa-wrench',
+                    'can' => 'technicals_orders.my_technical_orders',
                 ],
                 [
                     'text' => 'Verificación de órdenes',
                     'route' => 'technicals_orders.verification',
                     'active' => ['gestisp/technicals_orders*'],
                     'icon' => 'fas  fa-check-square',
+                    'can' => 'technicals_orders.verification',
                 ],
             ],
+
+
         ],
+
+        [
+            'text' => 'Gestión del sistema',
+            'icon' => 'fas  fa-cogs',
+            'submenu' => [
+                [
+                    'text' => 'Usuarios',
+                    'route' => '',
+                    'icon' => 'fas  fa-users-cog',
+                ],
+                [
+                    'text' => 'Roles',
+                    'route' => '',
+                    'icon' => 'fas  fa-sliders-h',
+                ],
+
+            ],
+
+            ]
 
 
     ],

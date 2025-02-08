@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         //Seeder de usuarios
         $this->call(BranchSeeder::class);
+        $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
+
         //Factories
         Branch::factory(2)->create();
         Client::factory(20)->create();
