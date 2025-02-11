@@ -134,6 +134,8 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
+
+                                                            //lo que pongo en este select si llega a la base de datos y si permite seguir la lógica del controlador, lo que no llega es lo de los selects dinámicos con js
                                                         </div>
 
                                                         <!-- Input de Cantidad -->
@@ -181,188 +183,14 @@
 @push('js')
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/resources/js/technical_orders/process_order.js"></script>
 @endpush
 
 @push('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .material-entry {
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .material-entry .form-group {
-            margin-bottom: 10px;
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 38px;
-            border: 1px solid #ced4da;
-        }
-
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 36px;
-        }
-
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 36px;
-        }
-
-        .modal-lg {
-            max-width: 80% !important;
-        }
-    </style>
+    <link rel="stylesheet" href="/resources/css/technical_orders/technical_orders.css">
 @endpush
 
-@push('js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            // Inicializar Select2 en los selectores existentes
-            initializeSelect2Elements();
-            // Configurar los handlers iniciales
-            setupMaterialChangeHandlers();
-        });
-
-        function initializeSelect2Elements() {
-            $('.material-select').each(function() {
-                if (!$(this).hasClass("select2-hidden-accessible")) {
-                    $(this).select2({
-                        placeholder: "Seleccione un material",
-                        allowClear: true,
-                        width: '100%'
-                    });
-                }
-            });
-
-            $('.serial-number-select').each(function() {
-                if (!$(this).hasClass("select2-hidden-accessible")) {
-                    $(this).select2({
-                        placeholder: "Seleccione un número de serie",
-                        allowClear: true,
-                        width: '100%'
-                    });
-                }
-            });
-        }
-
-        function addMaterialEntry(orderId) {
-            const container = $(`#materialsContainer${orderId}`);
-
-            // Crear un nuevo campo de material desde cero
-            const newEntry = $(`
-        <div class="material-entry border p-3 mb-3">
-            <div class="form-group">
-                <label>Material</label>
-                <select class="form-control material-select" name="material_id[]" style="width: 100%">
-                    <option value="">Seleccione un material</option>
-                    @foreach($materials as $material)
-            <option value="{{ $material->id }}"
-                                data-type="{{ $material->is_equipment ? 'equipo' : 'material' }}"
-                                data-quantity="{{ $material->total_quantity }}">
-                            {{ $material->name }} (Disponible: {{ $material->total_quantity }})
-                        </option>
-                    @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Cantidad</label>
-            <input type="number" class="form-control quantity-input" name="quantity[]" min="1">
-        </div>
-        <div class="form-group serial-number-container" style="display: none;">
-            <label>Número de Serie</label>
-            <select class="form-control serial-number-select" name="serial_number[]" style="width: 100%">
-                <option value="">Seleccione un número de serie</option>
-            </select>
-        </div>
-        <button type="button" class="btn btn-danger btn-sm float-right mt-2"><i class="fas fa-trash"></i> Eliminar</button>
-    </div>
-`);
-
-            // Agregar el nuevo campo al contenedor
-            container.append(newEntry);
-
-            // Inicializar Select2 para el nuevo campo
-            newEntry.find('.material-select').select2({
-                placeholder: "Seleccione un material",
-                allowClear: true,
-                width: '100%'
-            });
-
-            // Configurar el evento de cambio para el nuevo campo
-            newEntry.find('.material-select').on('change', function() {
-                handleMaterialChange($(this));
-            });
-
-            // Configurar el evento de eliminación
-            newEntry.find('.btn-danger').click(function() {
-                $(this).closest('.material-entry').remove();
-            });
-
-            // Configurar la validación de cantidad
-            newEntry.find('.quantity-input').on('input', function() {
-                const materialEntry = $(this).closest('.material-entry');
-                const materialSelect = materialEntry.find('.material-select');
-                const selectedOption = materialSelect.find(':selected');
-                const maxQuantity = selectedOption.data('quantity');
-
-                if (this.value > maxQuantity) {
-                    alert(`La cantidad no puede exceder ${maxQuantity}`);
-                    this.value = maxQuantity;
-                }
-            });
-        }
-
-        function setupMaterialChangeHandlers() {
-            $('.material-select').off('change').on('change', function() {
-                handleMaterialChange($(this));
-            });
-        }
-
-        function handleMaterialChange(materialSelect) {
-            const materialEntry = materialSelect.closest('.material-entry');
-            const serialNumberContainer = materialEntry.find('.serial-number-container');
-            const serialNumberSelect = materialEntry.find('.serial-number-select');
-            const selectedOption = materialSelect.find(':selected');
-            const materialType = selectedOption.data('type');
-            const materialId = selectedOption.val();
-
-            // Obtener el input de cantidad
-            const quantityInput = materialEntry.find('.quantity-input');
-            const maxQuantity = selectedOption.data('quantity');
-
-            // Actualizar el máximo permitido en el input de cantidad
-            if (maxQuantity) {
-                quantityInput.attr('max', maxQuantity);
-            }
-
-            if (materialType === 'equipo' && materialId) {
-                // Cargar números de serie
-                fetch(`/public/technicals_orders/get-serial-numbers/${materialId}`)
-                    .then(response => response.json())
-                    .then(serialNumbers => {
-                        serialNumberSelect.empty()
-                            .append('<option value="">Seleccione un número de serie</option>');
-
-                        serialNumbers.forEach(sn => {
-                            serialNumberSelect.append(
-                                `<option value="${sn}">${sn}</option>`
-                            );
-                        });
-
-                        serialNumberContainer.show();
-                        serialNumberSelect.trigger('change');
-                    });
-            } else {
-                serialNumberContainer.hide();
-                serialNumberSelect.val('').trigger('change');
-            }
-        }
-    </script>
-@endpush

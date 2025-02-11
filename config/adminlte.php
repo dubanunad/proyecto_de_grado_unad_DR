@@ -360,7 +360,7 @@ return [
                     'route' => 'clients.search',
                     'active' => ['gestisp/clients/search*'],
                     'icon' => 'fas  fa-search',
-                    'can' => 'branches.search',
+                    'can' => 'clients.search',
                 ],
                 [
                     'text' => 'Listado de clientes',
