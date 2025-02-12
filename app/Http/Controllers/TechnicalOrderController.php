@@ -375,8 +375,35 @@ class TechnicalOrderController extends Controller
      */
     public function show(TechnicalOrder $technicalOrder)
     {
-        //
+        // Obtener el almacén del usuario
+        $warehouse = Warehouse::where('user_id', Auth::user()->id)->first();
+
+        if ($warehouse) {
+            // Obtener los materiales que tienen inventario en ese almacén
+            $materials = Material::whereHas('inventories', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id)
+                    ->where('quantity', '>', 0); // Solo materiales con cantidad mayor a 0
+            })->with(['inventories' => function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id);
+            }])->get();
+
+            // Totalizar las cantidades para materiales de tipo "equipo"
+            foreach ($materials as $material) {
+                if ($material->is_equipment) {
+                    $totalQuantity = $material->inventories->sum('quantity');
+                    $material->total_quantity = $totalQuantity;
+                } else {
+                    $material->total_quantity = $material->inventories->first()->quantity ?? 0;
+                }
+            }
+        } else {
+            // Si no hay almacén, devolver una colección vacía
+            $materials = collect();
+        }
+
+        return view('gestisp.technicals_orders.show_and_process_order', compact('technicalOrder', 'materials', 'warehouse'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
