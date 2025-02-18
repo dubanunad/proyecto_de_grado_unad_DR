@@ -11,6 +11,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class WarehouseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:warehouses.index')->only('index');
+        $this->middleware('can:warehouses.create')->only('create', 'store');
+        $this->middleware('can:warehouses.edit')->only('edit', 'update');
+        $this->middleware('can:warehouses.destroy')->only('destroy');
+        $this->middleware('can:warehouses.pdf')->only('generatePdf');
+    }
     /**
      * Display a listing of the resource.
      */

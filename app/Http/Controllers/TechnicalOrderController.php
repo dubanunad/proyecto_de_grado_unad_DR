@@ -16,6 +16,21 @@ use Illuminate\Support\Facades\Log;
 
 class TechnicalOrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:technicals_orders.index')->only('index');
+        $this->middleware('can:technicals_orders.create')->only('create');
+        $this->middleware('can:technicals_orders.store')->only('store');
+        $this->middleware('can:technicals_orders.edit')->only('edit', 'update');
+        $this->middleware('can:technicals_orders.destroy')->only('destroy');
+        $this->middleware('can:technicals_orders.my_technical_orders')->only('myTechnicalOrders');
+        $this->middleware('can:technicals_orders.getSerialNumbers')->only('getSerialNumbers');
+        $this->middleware('can:technicals_orders.verification')->only('orderVerification');
+        $this->middleware('can:technicals_orders.process')->only('processOrder');
+        $this->middleware('can:technical_order.verification_process')->only('verificationOrderProcess');
+        $this->middleware('can:technical_orders.reject')->only('orderReject');
+    }
     /**
      * Display a listing of the resource.
      */

@@ -13,6 +13,14 @@ class ClientController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware('can:clients.index')->only('index');
+        $this->middleware('can:clients.create')->only('create', 'store');
+        $this->middleware('can:clients.edit')->only('edit', 'update');
+        $this->middleware('can:clients.destroy')->only('destroy');
+        $this->middleware('can:clients.search')->only('search');
+        $this->middleware('can:clients.searchView')->only('searchView');
+        $this->middleware('can:clients.export')->only('export');
     }
     public function searchView(){
         //Retornar a la vista del buscador
@@ -39,7 +47,6 @@ class ClientController extends Controller
         }
 
         $contracts = $client->contracts;
-
 
 
         //Retornar a la vista del buscador

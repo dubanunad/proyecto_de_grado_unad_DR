@@ -60,6 +60,7 @@ class RoleSeeder extends Seeder
 
         // Facturas
         Permission::create(['name' => 'invoices.index', 'description' => 'Ver facturas']);
+        Permission::create(['name' => 'invoices.show', 'description' => 'Ver factura individual']);
         Permission::create(['name' => 'invoices.create', 'description' => 'Crear facturas']);
         Permission::create(['name' => 'invoices.edit', 'description' => 'Editar facturas']);
         Permission::create(['name' => 'invoices.destroy', 'description' => 'Eliminar facturas']);

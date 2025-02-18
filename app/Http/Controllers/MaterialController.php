@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:materials.index')->only('index');
+        $this->middleware('can:materials.create')->only('create', 'store');
+        $this->middleware('can:materials.edit')->only('edit', 'update');
+        $this->middleware('can:materials.destroy')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */

@@ -18,6 +18,21 @@ use Milon\Barcode\Facades\DNS1DFacade;
 
 class InvoiceController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware('can:invoices.index')->only('index');
+        $this->middleware('can:invoices.create')->only('create', 'store');
+        $this->middleware('can:invoices.edit')->only('edit', 'update');
+        $this->middleware('can:invoices.show')->only('show');
+        $this->middleware('can:invoices.destroy')->only('destroy');
+        $this->middleware('can:invoices.generate')->only('generateInvoices');
+        $this->middleware('can:invoices.download-pdf')->only('downloadInvoicePdf');
+        $this->middleware('can:invoices.generate_max_pdf')->only('generatePendingInvoicesPdf');
+        $this->middleware('can:invoices.check-pdf-status')->only('checkPdfStatus');
+    }
     /**
      * Display a listing of the resource.
      */

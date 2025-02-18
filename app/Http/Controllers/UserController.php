@@ -10,6 +10,7 @@ class UserController extends Controller
     //Proteger rutas
     public function __construct()
     {
+        $this->middleware('auth');
         $this->middleware('can:users.index')->only('index');
         $this->middleware('can:users.create')->only('create', 'store');
         $this->middleware('can:users.edit')->only('edit', 'update');

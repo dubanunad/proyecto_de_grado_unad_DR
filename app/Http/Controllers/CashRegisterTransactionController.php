@@ -11,6 +11,15 @@ use Illuminate\Support\Carbon;
 
 class CashRegisterTransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:transactions.index')->only('index');
+        $this->middleware('can:transactions.store')->only('create', 'store');
+        $this->middleware('can:transactions.history')->only('edit', 'update');
+        $this->middleware('can:transactions.export')->only('exportHistoryTransactionsPDF');
+        $this->middleware('can:transactions.export-excel')->only('export');
+    }
     /**
      * Display a listing of the resource.
      */

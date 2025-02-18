@@ -30,6 +30,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
+
 Route::get('/', [App\Http\Controllers\AdminController::class, 'index'])->name('gestisp.index');
 
 // Rutas del dash con prefijo 'gestisp'

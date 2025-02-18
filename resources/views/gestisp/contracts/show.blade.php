@@ -55,8 +55,14 @@
                 </div>
             </div>
             <div class="card col-md-5 ml-md-1 mr-md-1">
-                <div class="card-header">
-                    <h3><i class="far fa-user"></i> Datos personales</h3>
+                <div class="card-header row">
+                    <div class="col-md-9 col-8">
+                        <h3><i class="far fa-user"></i> Datos personales</h3>
+                    </div>
+
+                    <div class="col-4 col-md-3 text-right">
+                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                    </div>
                 </div>
                 <div class="card-body row">
                     <p class="col-6"><strong>Número de Documento:</strong> {{ $contract->client->identity_number }}</p>
@@ -71,8 +77,14 @@
             </div>
 
             <div class="card col-md-5 ml-md-1 mr-md-1">
-                <div class="card-header">
-                    <h3><i class="fas fa-map-marked-alt"></i> Datos de residencia</h3>
+                <div class="card-header row">
+
+                    <div class="col-8 col-md-9">
+                        <h3><i class="fas fa-map-marked-alt"></i> Datos de residencia</h3>
+                    </div>
+                    <div class="col-4 col-md-3 text-right">
+                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                    </div>
                 </div>
                 <div class="card-body row">
                     <p class="col-6"><strong>Barrio:</strong> {{ $contract->neighborhood }}</p>
@@ -82,17 +94,30 @@
                 </div>
             </div>
             <div class="card col-md-5 ml-md-1 mr-md-1">
-                <div class="card-header">
-                    <h3><i class="fas fa-network-wired"></i> Datos del servicio</h3>
+                <div class="card-header row">
+                    <div class="col-8 col-md-9">
+                        <h3><i class="fas fa-network-wired"></i> Datos del servicio</h3>
+                    </div>
+
+                    <div class="col-4 col-md-3 text-right">
+                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                    </div>
                 </div>
+
                 <div class="card-body row">
                     <p class="col-6"><strong>Plan de servicio:</strong> {{ $contract->plan->name }}</p>
                     <p class="col-6"><strong>Clausula de permanencia:</strong> {{ $contract->permanence_clause }} Meses</p>
                 </div>
             </div>
             <div class="card col-md-5 ml-md-1 mr-md-1">
-                <div class="card-header">
-                    <h3><i class="fas fa-cogs"></i> Datos técnicos</h3>
+                <div class="card-header row">
+                    <div class="col-8 col-md-9">
+                        <h3><i class="fas fa-cogs"></i> Datos técnicos</h3>
+                    </div>
+
+                    <div class="col-4 col-md-3 text-right">
+                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                    </div>
                 </div>
                 <div class="card-body row">
                     <p class="col-6"><strong>NAP y puerto:</strong> {{ $contract->nap_port }}</p>
@@ -114,7 +139,6 @@
                 </div>
                 <div class="card-body text-center">
                     <a href="{{ route('technicals_orders.create', $contract) }}" class="btn btn-info mb-1 mt-1 col-8 col-md-3" title="Crear incidencia a contrato">Crear orden técnica</a>
-                    <a href="" class="btn btn-warning mb-1 mt-1 col-8 col-md-3" title="Modificar datos del contrato">Modificar información</a>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-success mb-1 mt-1 col-8 col-md-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                         Agregar Cargo Adicional

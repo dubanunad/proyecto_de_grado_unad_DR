@@ -14,6 +14,20 @@ use Illuminate\Support\Facades\DB;
 
 class MaterialMovementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:movements.index')->only('index');
+        $this->middleware('can:movements.create')->only('create', 'store');
+        $this->middleware('can:movements.edit')->only('edit', 'update');
+        $this->middleware('can:movements.destroy')->only('destroy');
+        $this->middleware('can:movements.query_sn')->only('getAvailableSerialNumbers');
+        $this->middleware('can:movements.material_quantity')->only('getAvailableQuantity');
+        $this->middleware('can:movements.history')->only('history');
+        $this->middleware('can:movements.history_data')->only('history');
+        $this->middleware('can:movements.pdf')->only('exportMovementsPDF');
+        $this->middleware('can:movements.excel')->only('export');
+    }
     /**
      * Display a listing of the resource.
      */

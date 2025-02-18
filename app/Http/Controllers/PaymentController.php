@@ -17,6 +17,18 @@ use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:payments.index')->only('index');
+        $this->middleware('can:payments.create')->only('create', 'store');
+        $this->middleware('can:payments.edit')->only('edit', 'update');
+        $this->middleware('can:payments.destroy')->only('destroy');
+        $this->middleware('can:payments.search')->only('search');
+        $this->middleware('can:payments.searchView')->only('searchView');
+        $this->middleware('can:payments.export')->only('exportPaymentsPDF');
+        $this->middleware('can:payments.export-excel')->only('export');
+    }
     /**
      * Display a listing of the resource.
      */

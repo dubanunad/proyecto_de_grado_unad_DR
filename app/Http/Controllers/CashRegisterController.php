@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Storage;
 
 class CashRegisterController extends Controller
 {
+    //Proteger rutas
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:cashRegisters.index')->only('index');
+        $this->middleware('can:cashRegisters.create')->only('create', 'store');
+        $this->middleware('can:cashRegisters.edit')->only('edit', 'update');
+        $this->middleware('can:cashRegisters.destroy')->only('destroy');
+        $this->middleware('can:cashRegisters.status')->only('status');
+        $this->middleware('can:cashRegisters.open')->only('status');
+        $this->middleware('can:cashRegisters.close')->only('close');
+    }
     /**
      * Display a listing of the resource.
      */

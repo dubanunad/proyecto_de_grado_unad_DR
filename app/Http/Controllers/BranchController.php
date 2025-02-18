@@ -11,6 +11,7 @@ class BranchController extends Controller
     //Proteger rutas
     public function __construct()
     {
+        $this->middleware('auth');
         $this->middleware('can:branches.index')->only('index');
         $this->middleware('can:branches.create')->only('create', 'store');
         $this->middleware('can:branches.edit')->only('edit', 'update');

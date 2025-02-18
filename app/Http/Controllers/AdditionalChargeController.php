@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AdditionalChargeController extends Controller
 {
+    //Proteger rutas
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:additionalCharges.index')->only('index');
+        $this->middleware('can:additionalCharges.create')->only('create', 'store');
+        $this->middleware('can:additionalCharges.edit')->only('edit', 'update');
+        $this->middleware('can:additionalCharges.destroy')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
