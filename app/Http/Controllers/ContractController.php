@@ -113,14 +113,26 @@ class ContractController extends Controller
             'branch_id' => session('branch_id')
         ]);
 
-        $contract = $request->all();
+
         // Crear el contrato con los datos del formulario
 
-        Contract::create($contract);
+        $contract = Contract::create($request->all());
+
+        //Creación de orden automática al crear contrato
+
+        TechnicalOrder::create([
+            'contract_id' => $contract->id,
+            'branch_id' => session('branch_id'),
+            'created_by' => Auth::user()->id,
+            'type' => 'Servicio',
+            'status' => 'Pendiente',
+            'detail' => 'Instalación de servicio (creación automática)',
+            'initial_comment' => 'Instalación del servicio'
+        ]);
 
 
         // Redirigir con un mensaje de éxito
-        return redirect()->route('clients.index')->with('success', 'Contrato creado exitosamente.');
+        return redirect()->route('contracts.index')->with('success', 'Contrato creado exitosamente.');
     }
 
     /**

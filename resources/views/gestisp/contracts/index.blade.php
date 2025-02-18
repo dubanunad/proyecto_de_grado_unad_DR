@@ -18,6 +18,10 @@
         <div class="alert alert-danger">
             {{ session('success-delete') }}
         </div>
+    @elseif(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     @endif
 
     <!-- Formulario para filtrar -->
