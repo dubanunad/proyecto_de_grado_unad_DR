@@ -61,8 +61,46 @@
                     </div>
 
                     <div class="col-4 col-md-3 text-right">
-                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editPersonalData">
+                            <i class="fas fa-edit"></i>
+                        </button>
                     </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="editPersonalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modificar datos personales</h5>
+                                    <button type="button" class="btn-danger" data-bs-dismiss="modal" aria-label="Close"><i class="far fa-window-close"></i></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('clients.update', $contract->client->id) }}" method="post">
+                                        @csrf
+                                        @method('put')
+                                        <div class="form-group">
+                                            <label for="">Número de teléfono principal:</label>
+                                            <input type="text" name="number_phone" class="form-control" value="{{ $contract->client->number_phone }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Número de teléfono adicional:</label>
+                                            <input type="text" name="aditional_phone" class="form-control" value="{{ $contract->client->aditional_phone }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Correo electrónico:</label>
+                                            <input type="text" name="email" class="form-control" value="{{ $contract->client->email }}">
+                                        </div>
+                                        <div class="text-center">
+                                            <hr>
+                                            <input type="submit" class="btn btn-success" value="Guardar">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
                 <div class="card-body row">
                     <p class="col-6"><strong>Número de Documento:</strong> {{ $contract->client->identity_number }}</p>
@@ -83,8 +121,63 @@
                         <h3><i class="fas fa-map-marked-alt"></i> Datos de residencia</h3>
                     </div>
                     <div class="col-4 col-md-3 text-right">
-                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editAddressData">
+                            <i class="fas fa-edit"></i>
+                        </button>
                     </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="editAddressData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modificar datos de residencia</h5>
+                                    <button type="button" class="btn-danger" data-bs-dismiss="modal" aria-label="Close"><i class="far fa-window-close"></i></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('contracts.update', $contract->id) }}" method="post">
+                                        @csrf
+                                        @method('put')
+                                        <div class="form-group">
+                                            <label for="">Barrio:</label>
+                                            <input type="text" name="neighborhood" class="form-control" value="{{ $contract->neighborhood }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Dirección:</label>
+                                            <input type="text" name="address" class="form-control" value="{{ $contract->address }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Tipo de vivienda:</label>
+                                            <select name="home_type" id="" class="form-control">
+                                                <option value="{{ $contract->home_type }}">{{ $contract->home_type }}</option>
+                                                <option value="Propia">Propia</option>
+                                                <option value="En Arriendo">En Arriendo</option>
+                                                <option value="Otra">Otra</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Estrato social:</label>
+                                            <select name="social_stratum" id="" class="form-control">
+                                                <option value="{{ $contract->social_stratum }}">{{ $contract->social_stratum }}</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                            </select>
+                                        </div>
+                                        <div class="text-center">
+                                            <hr>
+                                            <input type="submit" class="btn btn-success" value="Guardar">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="card-body row">
                     <p class="col-6"><strong>Barrio:</strong> {{ $contract->neighborhood }}</p>

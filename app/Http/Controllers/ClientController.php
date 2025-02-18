@@ -152,8 +152,7 @@ class ClientController extends Controller
             'email' => $request->email,
         ]);
 
-        return redirect()->action([ClientController::class, 'edit'], ['client' => $client->id])
-            ->with('success-update', 'Datos del cliente actualizados');
+        return redirect()->back()->with('success', 'Datos del cliente actualizados');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -27,4 +28,16 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    //La siguiente funcíón forza la traducción de los mensajes de acción no autorizada
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof AuthorizationException) {
+            abort(403, __('auth.unauthorized')); // Usa la traducción en español
+        }
+
+        return parent::render($request, $exception);
+    }
+
+
 }

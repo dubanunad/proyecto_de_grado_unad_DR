@@ -116,8 +116,9 @@ class ContractController extends Controller
         $contract = $request->all();
         // Crear el contrato con los datos del formulario
 
-
         Contract::create($contract);
+
+
         // Redirigir con un mensaje de éxito
         return redirect()->route('clients.index')->with('success', 'Contrato creado exitosamente.');
     }
@@ -156,7 +157,14 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        //
+        $contract->update([
+            'neighborhood' => $request->neighborhood,
+            'address' => $request->address,
+            'home_type' => $request->home_type,
+            'social_stratum' => $request->social_stratum
+            ]);
+
+        return redirect()->back()->with('success', 'Datos del contrato actualizados');
     }
 
     /**
