@@ -194,7 +194,7 @@ class RoleSeeder extends Seeder
 
         $technical->givePermissionTo([
             'gestisp.index',
-            'technicals_orders.my_technical_orders', 'technicals_orders.process', 'technicals_orders.getSerialNumbers', 'technical_orders.reject'
+            'technicals_orders.my_technical_orders', 'technicals_orders.process', 'technicals_orders.getSerialNumbers', 'technical_orders.reject', 'movements.material_quantity', 'movements.query_sn'
         ]);
     }
 }

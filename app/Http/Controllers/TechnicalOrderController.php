@@ -22,7 +22,8 @@ class TechnicalOrderController extends Controller
         $this->middleware('can:technicals_orders.index')->only('index');
         $this->middleware('can:technicals_orders.create')->only('create');
         $this->middleware('can:technicals_orders.store')->only('store');
-        $this->middleware('can:technicals_orders.edit')->only('edit', 'update');
+        $this->middleware('can:technicals_orders.edit')->only('edit');
+        $this->middleware('can:technicals_orders.update')->only('update');
         $this->middleware('can:technicals_orders.destroy')->only('destroy');
         $this->middleware('can:technicals_orders.my_technical_orders')->only('myTechnicalOrders');
         $this->middleware('can:technicals_orders.getSerialNumbers')->only('getSerialNumbers');
@@ -181,12 +182,22 @@ class TechnicalOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, TechnicalOrder $technicalOrder)
+    public function store(Request $request)
     {
         try {
             // Obtén el ID de la sucursal y el usuario autenticado
             $branchId = session('branch_id');
-            $createdBy = Auth()->id();
+            $createdBy = Auth::id();
+
+            // Validar si existe una orden técnica en curso para el contrato
+            $existingOrder = TechnicalOrder::where('contract_id', $request->contract_id)
+                ->where('status', '!=', 'Cerrada')
+                ->exists();
+
+            if ($existingOrder) {
+                return redirect()->route('contracts.show', $request->contract_id)
+                    ->with('error', 'Ya existe una orden técnica en curso para este contrato.');
+            }
 
             // Log: Información de depuración
             Log::info('Creando orden técnica', [
@@ -199,13 +210,14 @@ class TechnicalOrderController extends Controller
             ]);
 
             // Crea la orden técnica
-            $technicalOrder->create([
+            TechnicalOrder::create([
                 'contract_id' => $request->contract_id,
                 'branch_id' => $branchId,
                 'created_by' => $createdBy,
                 'type' => $request->order_type,
                 'detail' => $request->order_detail,
                 'initial_comment' => $request->initial_comment,
+                'status' => 'Pendiente', // O cualquier estado inicial que uses
             ]);
 
             // Log: Éxito
@@ -220,11 +232,12 @@ class TechnicalOrderController extends Controller
                 'exception' => $e,
             ]);
 
-            // Redirige a la ruta contracts.show con el ID del contrato y un mensaje de error
+            // Redirige con un mensaje de error
             return redirect()->route('contracts.show', $request->contract_id)
                 ->with('error', 'Hubo un error al crear la orden técnica: ' . $e->getMessage());
         }
     }
+
 
     //Manejar las órdenes del usuario técnico
 
