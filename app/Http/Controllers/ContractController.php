@@ -169,12 +169,29 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        $contract->update([
-            'neighborhood' => $request->neighborhood,
-            'address' => $request->address,
-            'home_type' => $request->home_type,
-            'social_stratum' => $request->social_stratum
+        if (isset($request->neighborhood) || isset($request->address) || isset($request->home_type) || isset($request->social_stratum) ){
+            $contract->update([
+                'neighborhood' => $request->neighborhood,
+                'address' => $request->address,
+                'home_type' => $request->home_type,
+                'social_stratum' => $request->social_stratum
             ]);
+        }elseif (isset($request->plan_id) || isset($request->permanence_clause)){
+            $contract->update([
+                'plan_id' => $request->plan_id,
+                'permanence_clause' => $request->permanence_clause,
+            ]);
+        }else{
+            $contract->update([
+                'nap_port' => $request->nap_port,
+                'cpe_sn' => $request->cpe_sn,
+                'user_pppoe' => $request->user_pppoe,
+                'password_pppoe' => $request->password_pppoe,
+                'ssid_wifi' => $request->ssid_wifi,
+                'password_wifi' => $request->password_wifi,
+            ]);
+        }
+
 
         return redirect()->back()->with('success', 'Datos del contrato actualizados');
     }

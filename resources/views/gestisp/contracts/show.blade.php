@@ -193,7 +193,48 @@
                     </div>
 
                     <div class="col-4 col-md-3 text-right">
-                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editServiceData">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="editServiceData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modificar datos del servicio</h5>
+                                    <button type="button" class="btn-danger" data-bs-dismiss="modal" aria-label="Close"><i class="far fa-window-close"></i></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('contracts.update', $contract->id) }}" method="post">
+                                        @csrf
+                                        @method('put')
+                                        <div class="form-group">
+                                            <label for="">Plan:</label>
+                                            <select name="plan_id" id="" class="form-control">
+                                                @foreach($plans as $plan)
+                                                    <option  value="{{ $plan->id }}" {{ $contract->plan_id == $plan->id ? 'selected' : ''}}>
+                                                        {{ $plan->name }}
+                                                    </option>
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Cláusula de permanencia:</label>
+                                            <input type="number" name="permanence_clause" class="form-control" value="{{ $contract->permanence_clause }}">
+                                        </div>
+
+                                        <div class="text-center">
+                                            <hr>
+                                            <input type="submit" class="btn btn-success" value="Guardar">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -209,7 +250,57 @@
                     </div>
 
                     <div class="col-4 col-md-3 text-right">
-                        <a href="" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editTechnicalData">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="editTechnicalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Modificar datos técnicos</h5>
+                                    <button type="button" class="btn-danger" data-bs-dismiss="modal" aria-label="Close"><i class="far fa-window-close"></i></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('contracts.update', $contract->id) }}" method="post">
+                                        @csrf
+                                        @method('put')
+                                        <div class="form-group">
+                                            <label for="">NAP y Puerto:</label>
+                                            <input type="text" class="form-control" name="nap_port" value="{{ $contract->nap_port }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Serial del CPE:</label>
+                                            <input type="text" class="form-control" name="cpe_sn" value="{{ $contract->cpe_sn }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Usuario pppoe:</label>
+                                            <input type="text" class="form-control" name="user_pppoe" value="{{ $contract->user_pppoe }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Contraseña pppoe:</label>
+                                            <input type="text" class="form-control" name="password_pppoe" value="{{ $contract->password_pppoe }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">SSID del Wifi:</label>
+                                            <input type="text" class="form-control" name="ssid_wifi" value="{{ $contract->ssid_wifi }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Contraseña del Wifi:</label>
+                                            <input type="text" class="form-control" name="password_wifi" value="{{ $contract->password_wifi }}">
+                                        </div>
+
+                                        <div class="text-center">
+                                            <hr>
+                                            <input type="submit" class="btn btn-success" value="Guardar">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body row">
@@ -221,6 +312,7 @@
                     <p class="col-6"><strong>Contraseña del Wifi:</strong> {{ $contract->password_wifi }}</p>
                     <p class="col-6"><strong>Contrato realizado por:</strong> {{ $contract->user->name }} {{ $contract->user->last_name }} </p>
                     <p class="col-6"><strong>Fecha de creación:</strong> {{ $contract->created_at }} </p>
+                    <p class="col-6"><strong>Fecha de activación:</strong> {{ $contract->activation_date ?? 'N/A'}} </p>
                     <p class="col-6"><strong>Última actualización:</strong> {{ $contract->updated_at }} </p>
 
                 </div>
@@ -242,8 +334,8 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">AGREGAR CARGO A CONTRATO</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h5 class="modal-title" id="">Agregar cargo adicional a contrato</h5>
+                                    <button type="button" class="btn-danger" data-bs-dismiss="modal" aria-label="Close"><i class="far fa-window-close"></i></button>
                                 </div>
                                 <div class="modal-body">
                                     <form method="POST" action="{{ route('additionalCharges.store') }}">
@@ -252,8 +344,8 @@
                                         <input type="text" value="{{$contract->id}}" name="contract_id" hidden="hidden">
 
                                         <!-- Description -->
-                                        <div class="form-group mb-3">
-                                            <label for="description">Descripción</label>
+                                        <div class="form-group mb-3 text-left">
+                                            <label for="description">Descripción:</label>
                                             <input type="text" class="form-control @error('description') is-invalid @enderror" id="description" name="description" value="{{ old('description') }}" required>
                                             @error('description')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -261,28 +353,22 @@
                                         </div>
 
                                         <!-- Amount -->
-                                        <div class="form-group mb-3">
-                                            <label for="amount">Monto</label>
+                                        <div class="form-group mb-3 text-left">
+                                            <label for="amount">Monto:</label>
                                             <input type="number" step="0.01" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount') }}" required>
                                             @error('amount')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-
-
-
-                                        <!-- Submit Button -->
+                                        <hr>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Guardar</button>
+                                            <button type="submit" class="btn btn-success">Agregar cargo</button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                                         </div>
 
                                     </form>
-
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 
-                                </div>
                             </div>
                         </div>
                     </div>
