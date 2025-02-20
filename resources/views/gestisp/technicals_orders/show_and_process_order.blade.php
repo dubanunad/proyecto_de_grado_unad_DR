@@ -9,6 +9,11 @@
 @endsection
 
 @section('content')
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="row">
         <div class="card p-3 mt-1 col-md-6">
             <h3>Datos del cliente</h3>
@@ -29,7 +34,7 @@
         </div>
         <div class="card mt-1 p-3 col-md-6">
             <h3>Procesamiento de orden</h3>
-            <form action="{{ route('technicals_orders.process', $technicalOrder->id) }}" method="post">
+            <form action="{{ route('technicals_orders.process', $technicalOrder->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                     <label for="">Comentario del técnico</label>

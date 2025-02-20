@@ -132,6 +132,13 @@ class TechnicalOrderController extends Controller
                 'comments' => $request->input('verification_comment'),
             ]);
 
+            //Si la orden que se está trabajando tiene como detalle 'Instalacion de servicio' o 'Reconexion', actualizar el estado del contrato al que pertece a Activo
+            if($technicalOrder->detail == 'Instalacion de servicio' ||  $technicalOrder->detail == 'Reconexion' || $technicalOrder->detail == 'Instalación de servicio (creación automática)' ){
+                $contract = Contract::where('id', $technicalOrder->contract_id)->first();
+                $contract->update(['status' => 'Activo', 'activation_date' => now()]);
+
+            }
+
             return redirect()->route('technicals_orders.verification')->with('success', 'La orden ha sido cerrada exitosamente.');
 
         } elseif ($request->has('reject_order')) {
@@ -302,6 +309,7 @@ class TechnicalOrderController extends Controller
 
     public function processOrder(Request $request, $id)
     {
+
         try {
             // Validar la solicitud
             $request->validate([
@@ -311,6 +319,7 @@ class TechnicalOrderController extends Controller
                 'material_id' => 'nullable|array',
                 'quantity' => 'nullable|array',
                 'serial_number' => 'nullable|array',
+                'images' => 'nullable|array'
             ]);
 
             // Iniciar transacción
@@ -326,13 +335,37 @@ class TechnicalOrderController extends Controller
                 throw new \Exception('No se encontró un almacén asociado al usuario.');
             }
 
-            // Actualizar la orden técnica
-            $technicalOrder->update([
-                'observations_technical' => $request->input('observations_technical'),
-                'client_observation' => $request->input('client_observation'),
-                'solution' => $request->input('solution'),
-                'status' => 'Prefinalizada',
-            ]);
+            if($request->hasFile('images')){
+
+                $imagPaths = [];
+
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('technical_orders/images', 'public');
+                    $imagPaths[]= 'storage/' .$path;
+                }
+
+                // Actualizar la orden técnica
+                $technicalOrder->update([
+                    'observations_technical' => $request->input('observations_technical'),
+                    'client_observation' => $request->input('client_observation'),
+                    'solution' => $request->input('solution'),
+                    'status' => 'Prefinalizada',
+                    'images' => json_encode($imagPaths),
+
+                ]);
+
+            }else{
+
+                // Actualizar la orden técnica sin imágenes
+                $technicalOrder->update([
+                    'observations_technical' => $request->input('observations_technical'),
+                    'client_observation' => $request->input('client_observation'),
+                    'solution' => $request->input('solution'),
+                    'status' => 'Prefinalizada',
+                ]);
+            }
+
+
 
             // Procesar los materiales
             if ($request->has('material_id')) {
@@ -379,7 +412,12 @@ class TechnicalOrderController extends Controller
                         }
                     }
                 }
+                //Insertar el número de SN que trae la orden al contrato
+                $contract = Contract::where('id', $technicalOrder->contract_id)->first();
+                $contract->update(['cpe_sn' => $serialNumber]);
             }
+
+
 
             // Confirmar transacción
             DB::commit();

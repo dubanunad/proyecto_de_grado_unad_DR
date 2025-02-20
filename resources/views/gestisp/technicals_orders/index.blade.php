@@ -184,23 +184,27 @@
                                                             <div class="card">
                                                                 <div id="carouselExample" class="carousel slide">
                                                                     <div class="carousel-inner">
-                                                                        <div class="carousel-item active">
-                                                                            <img src="https://i.blogs.es/351454/conector/650_1200.jpg" class="d-block w-100" alt="...">
-                                                                        </div>
-                                                                        <div class="carousel-item">
-                                                                            <img src="https://www.adslzone.net/app/uploads-adslzone.net/2023/01/ONT-2.jpg" class="d-block w-100" alt="...">
-                                                                        </div>
-                                                                        <div class="carousel-item">
-                                                                            <img src="..." class="d-block w-100" alt="...">
-                                                                        </div>
+                                                                        @php
+                                                                            $images = is_string($technical_order->images) ? json_decode($technical_order->images) : [];
+                                                                        @endphp
+
+                                                                        @forelse($images as $index => $image)
+                                                                            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                                                                <img src="{{ asset($image) }}" class="d-block w-100" alt="Imagen técnica {{ $index + 1 }}">
+                                                                            </div>
+                                                                        @empty
+                                                                            <div class="carousel-item active">
+                                                                                <img src="{{ asset('path/to/default-image.jpg') }}" class="d-block w-100" alt="No hay imágenes disponibles">
+                                                                            </div>
+                                                                        @endforelse
                                                                     </div>
                                                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
                                                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                                        <span class="visually-hidden">Previous</span>
+                                                                        <span class="visually-hidden">Anterior</span>
                                                                     </button>
                                                                     <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
                                                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                                        <span class="visually-hidden">Next</span>
+                                                                        <span class="visually-hidden">Siguiente</span>
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -214,9 +218,11 @@
                                                                 <th>SN</th>
                                                             </tr>
                                                             @foreach($technical_order->materials as $material_to_order)
-                                                                <td>{{ $material_to_order->material->name }}</td>
-                                                                <td>{{ $material_to_order->quantity }}</td>
-                                                                <td>{{ $material_to_order->serial_number }}</td>
+                                                                <tr>
+                                                                    <td>{{ $material_to_order->material->name }}</td>
+                                                                    <td>{{ $material_to_order->quantity }}</td>
+                                                                    <td>{{ $material_to_order->serial_number }}</td>
+                                                                </tr>
                                                             @endforeach
                                                         </table>
                                                     </div>
