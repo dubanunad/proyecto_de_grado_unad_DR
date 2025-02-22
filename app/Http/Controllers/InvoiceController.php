@@ -22,7 +22,6 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('auth');
         $this->middleware('can:invoices.index')->only('index');
         $this->middleware('can:invoices.create')->only('create', 'store');
         $this->middleware('can:invoices.edit')->only('edit', 'update');
@@ -44,6 +43,7 @@ class InvoiceController extends Controller
         $invoices = Invoice::join('contracts', 'invoices.contract_id', '=', 'contracts.id')
             ->join('clients', 'contracts.client_id', '=', 'clients.id')
             ->where('clients.branch_id', $branchId) // Filtra por sucursal
+            ->where('contracts.branch_id', $branchId) // Filtra por sucursal
             ->select('invoices.*') // Solo selecciona columnas de la tabla invoices
             ->paginate(10); // Paginación
 

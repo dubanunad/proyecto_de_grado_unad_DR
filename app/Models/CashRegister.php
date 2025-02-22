@@ -39,11 +39,11 @@ class CashRegister extends Model
     public function calculateTotals()
     {
         $this->total_income = $this->transactions()
-            ->where('transaction_type', 'income')
+            ->where('transaction_type', 'Ingreso')
             ->sum('amount');
 
         $this->total_expenses = $this->transactions()
-            ->where('transaction_type', 'expense')
+            ->where('transaction_type', 'Egreso')
             ->sum('amount');
 
         $this->expected_amount = $this->initial_amount + $this->total_income - $this->total_expenses;

@@ -18,9 +18,9 @@ class CashRegisterController extends Controller
         $this->middleware('can:cashRegisters.create')->only('create', 'store');
         $this->middleware('can:cashRegisters.edit')->only('edit', 'update');
         $this->middleware('can:cashRegisters.destroy')->only('destroy');
-        $this->middleware('can:cashRegisters.status')->only('status');
-        $this->middleware('can:cashRegisters.open')->only('status');
-        $this->middleware('can:cashRegisters.close')->only('close');
+        $this->middleware('can:cash_register.status')->only('status');
+        $this->middleware('can:cash_register.open')->only('open');
+        $this->middleware('can:cash_register.close')->only('close');
     }
     /**
      * Display a listing of the resource.
