@@ -23,6 +23,8 @@ class Invoice extends Model
         'tax',
         'total',
         'status',
+        'service_suspension_warning',
+        'service_suspension_date',
     ];
 
 
@@ -109,5 +111,21 @@ class Invoice extends Model
     public function canReceivePayment()
     {
         return $this->getPendingAmount() > 0;
+    }
+
+    // Método para verificar si hay facturas vencidas
+    public function hasOverdueInvoices()
+    {
+        return Invoice::where('contract_id', $this->contract_id)
+            ->where('status', 'Vencida')
+            ->exists();
+    }
+
+    // Método para marcar la factura para suspensión de servicio
+    public function markForServiceSuspension()
+    {
+        $this->service_suspension_warning = true;
+        $this->service_suspension_date = $this->due_date->addDays(4); // 4 días después del vencimiento
+        $this->save();
     }
 }

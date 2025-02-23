@@ -159,8 +159,16 @@
             </tr>
             @endforeach
             <tr>
-                <td colspan="7"><p>Descripción del servicio: {{ $invoice->contract->plan->name }}</p></td>
-                <td class="border-left"></td>
+                <td colspan="4"><p>Descripción del servicio: {{ $invoice->contract->plan->name }} </p></td>
+                <td colspan="3">
+                        @if($invoice->service_suspension_warning)
+                            <p style="color: red; font-weight: bold; margin-left: 20px; text-align: left;">
+                                *** PAGO INMEDIATO - AVISO DE CORTE ***
+                            </p>
+                        @endif
+                </td>
+                <td colspan="1" class="border-left">
+                </td>
             </tr>
             <tr>
                 <td colspan="6" rowspan="2" class="text-center border-top"><p>{{ $invoice->contract->branch->message_custom_invoice }}</p></td>
@@ -212,7 +220,12 @@
     <hr style="margin: 5px 0; border-top: 1px dashed #000;">
 
     <div class="container">
-        <table>
+        @if($invoice->service_suspension_warning)
+            <p style="color: red; font-weight: bold; margin-right: 122px; text-align: right;">
+                *** PAGO INMEDIATO - AVISO DE CORTE ***
+            </p>
+        @endif
+        <table width="100%">
             <tbody>
                 <tr>
                    <td style="padding-right: 80px">
@@ -236,7 +249,7 @@
     </div>
 
     <div class="container">
-        <table>
+        <table width="100%">
             <tbody>
                 <tr>
                     <td>

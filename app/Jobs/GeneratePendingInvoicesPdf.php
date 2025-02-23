@@ -29,7 +29,7 @@ class GeneratePendingInvoicesPdf implements ShouldQueue
     {
         try {
             // Obtener las facturas pendientes de la sucursal específica
-            $invoices = Invoice::where('status', 'Pendiente')
+            $invoices = Invoice::whereIn('status', ['Pendiente', 'Pendiente con riesgo de corte'])
                 ->whereHas('contract.client', function ($query) {
                     $query->where('branch_id', $this->branchId);
                 })
