@@ -133,10 +133,14 @@ class TechnicalOrderController extends Controller
             ]);
 
             //Si la orden que se está trabajando tiene como detalle 'Instalacion de servicio' o 'Reconexion', actualizar el estado del contrato al que pertece a Activo
-            if($technicalOrder->detail == 'Instalacion de servicio' ||  $technicalOrder->detail == 'Reconexion' || $technicalOrder->detail == 'Instalación de servicio (creación automática)' ){
+            if($technicalOrder->detail == 'Instalacion de servicio' ||  $technicalOrder->detail == 'Reconexión' || $technicalOrder->detail == 'Instalación de servicio (creación automática)' ){
                 $contract = Contract::where('id', $technicalOrder->contract_id)->first();
                 $contract->update(['status' => 'Activo', 'activation_date' => now()]);
 
+                //Si la orden es por corte o suspensión temporal
+            }elseif ($technicalOrder->detail == 'Corte de servicio' ||  $technicalOrder->detail == 'Suspensión temporal'){
+                $contract = Contract::where('id', $technicalOrder->contract_id)->first();
+                $contract->update(['status' => 'Suspendido']);
             }
 
             return redirect()->route('technicals_orders.verification')->with('success', 'La orden ha sido cerrada exitosamente.');

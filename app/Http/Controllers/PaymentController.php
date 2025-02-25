@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\TechnicalOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -243,6 +244,34 @@ class PaymentController extends Controller
             // Actualizar el estado de la factura
             if ($validated['amount'] >= $pendingAmount) {
                 $invoice->update(['status' => 'Pagada']);
+
+                // Verificar y actualizar el contrato si estaba en suspensión o pre-suspensión
+                $contract = $invoice->contract;
+                if ($contract && in_array($contract->status, ['Pre-suspensión'])) {
+                    $contract->update([
+                        'status' => 'Activo',
+                        'overdue_invoices_count' => 0,
+                        'suspension_warning_date' => null,
+                        'suspension_date' => null
+                    ]);
+                }elseif ($contract && in_array($contract->status, ['Suspendido'])){
+                    // Crear una orden técnica de reconexión
+                    TechnicalOrder::create([
+                        'contract_id' => $contract->id,
+                        'branch_id' => session('branch_id'),
+                        'type' => 'Servicio',
+                        'detail' => 'Reconexión',
+                        'initial_comment' => 'Orden de reconexión automática por pago'
+                    ]);
+
+                    // Actualizar el contrato
+                    $contract->update([
+                        'status' => 'Por Reconexión',
+                        'overdue_invoices_count' => 0,
+                        'suspension_warning_date' => null,
+                        'suspension_date' => null
+                    ]);
+                }
             } else {
                 $invoice->update(['status' => 'Pendiente Parcial']);
             }

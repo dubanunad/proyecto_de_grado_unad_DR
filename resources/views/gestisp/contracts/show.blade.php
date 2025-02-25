@@ -491,7 +491,7 @@
                                                     <td>{{ $technicalOrder->initial_comment }}</td>
                                                     <td>{{ $technicalOrder->assignedUser->name ?? 'N/A'}} {{ $technicalOrder->assignedUser->last_name ?? 'N/A'}}</td>
                                                     <td>{{ $technicalOrder->created_at }}</td>
-                                                    <td>{{ $technicalOrder->createdBy->name }} {{ $technicalOrder->createdBy->last_name }}</td>
+                                                    <td>{{ $technicalOrder->createdBy->name ?? 'Sistema'}} {{ $technicalOrder->createdBy->last_name ?? 'Sistema' }}</td>
                                                     <td>{{ $technicalOrder->status }}</td>
                                                     <td>
                                                         <!-- Button trigger modal -->

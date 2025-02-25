@@ -147,10 +147,11 @@ class ContractController extends Controller
         $plans = Plan::all(); // Todos los planes disponibles
         $users = User::all(); // Todos los usuarios para asignar a un contrato
         $invoices = Invoice::where('contract_id', $contract->id)
+                ->orderBy('updated_at', 'desc')
                 ->simplePaginate(6);
         $additionalCharges = AditionalCharge::where('contract_id', $contract->id)
             ->simplePaginate(6);
-        $technicalOrders = TechnicalOrder::where('contract_id', $contract->id)->simplePaginate(6);
+        $technicalOrders = TechnicalOrder::where('contract_id', $contract->id)->orderBy('created_at', 'desc')->simplePaginate(6);
 
         // Devolver la vista con los datos necesarios
         return view('gestisp.contracts.show', compact('branches', 'clients', 'plans', 'users', 'contract', 'invoices', 'additionalCharges', 'technicalOrders'));

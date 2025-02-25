@@ -30,7 +30,7 @@
             <p><strong>Tipo de orden:</strong> {{ $technicalOrder->type }}</p>
             <p><strong>Detalle de orden:</strong> {{ $technicalOrder->detail }}</p>
             <p><strong>Comentario inicial:</strong> {{ $technicalOrder->initial_comment }}</p>
-            <p><strong>Creada el:</strong> {{ $technicalOrder->created_at}} <strong>Por: </strong>{{  $technicalOrder->createdBy->name }} {{  $technicalOrder->createdBy->last_name }}</p>
+            <p><strong>Creada el:</strong> {{ $technicalOrder->created_at ?? 'N/A'}} <strong>Por: </strong>{{  $technicalOrder->createdBy->name ?? 'Sistema'}} {{  $technicalOrder->createdBy->last_name  ?? 'Sistema'}}</p>
         </div>
         <div class="card mt-1 p-3 col-md-6">
             <h3>Procesamiento de orden</h3>

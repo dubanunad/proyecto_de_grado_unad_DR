@@ -59,6 +59,7 @@
                         <option value="Traslado de servicio" data-type="Servicio">Traslado de servicio</option>
                         <option value="Adicion de servicio" data-type="Servicio">Adición de servicio</option>
                         <option value="Suspensión temporal" data-type="Servicio">Suspensión temporal</option>
+                        <option value="Reconexión" data-type="Servicio">Reconexión</option>
                         <!-- Opciones de incidencia -->
                         <option value="Sin servicio de TV" data-type="Incidencia">Sin servicio de TV</option>
                         <option value="Sin servicio de internet" data-type="Incidencia">Sin servicio de internet</option>
