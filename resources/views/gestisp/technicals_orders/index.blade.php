@@ -86,15 +86,10 @@
                                     <i class="fas fa-times"></i> Limpiar
                                 </a>
 
-                                <a href="{{ route('movements.excel') }}" class="btn btn-success" title="Exportar todos los movimientos a Excel">
+                                <a href="" class="btn btn-success" title="Exportar todas las órdenes a Excel">
                                     <i class="fas fa-file-excel"></i>
                                 </a>
-                                <a href="{{ route('movements.pdf', [
-                            'filter_field' => request('filter_field'),
-                            'filter_value' => request('filter_value'),
-                            'start_date' => request('start_date'),
-                            'end_date' => request('end_date'),
-                        ]) }}" class="btn btn-danger" title="Reporte en PDF">
+                                <a href="" class="btn btn-danger" title="Reporte en PDF">
                                     <i class="far fa-file-pdf"></i>
                                 </a>
 

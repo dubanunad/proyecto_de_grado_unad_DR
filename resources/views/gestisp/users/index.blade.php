@@ -26,7 +26,7 @@
 
     <div class="card">
         <div class="card-header d-flex justify-content-end">
-            <a class="btn btn-primary" href="{{ route('plans.create') }}">Crear usuario <i class="fas fa-plus-circle"></i></a>
+            <a class="btn btn-primary" href="{{ route('users.create') }}">Crear usuario <i class="fas fa-plus-circle"></i></a>
         </div>
     </div>
 
