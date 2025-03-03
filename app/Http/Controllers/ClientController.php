@@ -14,13 +14,13 @@ class ClientController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('auth');
-        $this->middleware('can:clients.index')->only('index');
-        $this->middleware('can:clients.create')->only('create', 'store');
-        $this->middleware('can:clients.edit')->only('edit', 'update');
-        $this->middleware('can:clients.destroy')->only('destroy');
-        $this->middleware('can:clients.search')->only('search');
-        $this->middleware('can:clients.searchView')->only('searchView');
-        $this->middleware('can:clients.export')->only('export');
+        $this->middleware('check.permission:clients.index')->only('index');
+        $this->middleware('check.permission:clients.create')->only('create', 'store');
+        $this->middleware('check.permission:clients.edit')->only('edit', 'update');
+        $this->middleware('check.permission:clients.destroy')->only('destroy');
+        $this->middleware('check.permission:clients.search')->only('search');
+        $this->middleware('check.permission:clients.searchView')->only('searchView');
+        $this->middleware('check.permission:clients.export')->only('export');
     }
     public function searchView(){
         //Retornar a la vista del buscador

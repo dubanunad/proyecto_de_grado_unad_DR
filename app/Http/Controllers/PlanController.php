@@ -12,10 +12,10 @@ class PlanController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:plans.index')->only('index');
-        $this->middleware('can:plans.create')->only('create', 'store');
-        $this->middleware('can:plans.edit')->only('edit', 'update');
-        $this->middleware('can:plans.destroy')->only('destroy');
+        $this->middleware('check.permission:plans.index')->only('index');
+        $this->middleware('check.permission:plans.create')->only('create', 'store');
+        $this->middleware('check.permission:plans.edit')->only('edit', 'update');
+        $this->middleware('check.permission:plans.destroy')->only('destroy');
     }
     /**
      * Display a listing of the resource.

@@ -20,12 +20,12 @@ class ContractController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:contracts.index')->only('index');
-        $this->middleware('can:contracts.create')->only('create', 'store');
-        $this->middleware('can:contracts.edit')->only('edit', 'update');
-        $this->middleware('can:contracts.destroy')->only('destroy');
-        $this->middleware('can:contracts.show')->only('show');
-        $this->middleware('can:contracts.export')->only('export');
+        $this->middleware('check.permission:contracts.index')->only('index');
+        $this->middleware('check.permission:contracts.create')->only('create', 'store');
+        $this->middleware('check.permission:contracts.edit')->only('edit', 'update');
+        $this->middleware('check.permission:contracts.destroy')->only('destroy');
+        $this->middleware('check.permission:contracts.show')->only('show');
+        $this->middleware('check.permission:contracts.export')->only('export');
     }
     /**
      * Display a listing of the resource.

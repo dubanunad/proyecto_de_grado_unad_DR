@@ -21,14 +21,14 @@ class PaymentController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:payments.index')->only('index');
-        $this->middleware('can:payments.create')->only('create', 'store');
-        $this->middleware('can:payments.edit')->only('edit', 'update');
-        $this->middleware('can:payments.destroy')->only('destroy');
-        $this->middleware('can:payments.search')->only('search');
-        $this->middleware('can:payments.searchView')->only('searchView');
-        $this->middleware('can:payments.export')->only('exportPaymentsPDF');
-        $this->middleware('can:payments.export-excel')->only('export');
+        $this->middleware('check.permission:payments.index')->only('index');
+        $this->middleware('check.permission:payments.create')->only('create', 'store');
+        $this->middleware('check.permission:payments.edit')->only('edit', 'update');
+        $this->middleware('check.permission:payments.destroy')->only('destroy');
+        $this->middleware('check.permission:payments.search')->only('search');
+        $this->middleware('check.permission:payments.searchView')->only('searchView');
+        $this->middleware('check.permission:payments.export')->only('exportPaymentsPDF');
+        $this->middleware('check.permission:payments.export-excel')->only('export');
     }
     /**
      * Display a listing of the resource.

@@ -12,10 +12,10 @@ class BranchController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:branches.index')->only('index');
-        $this->middleware('can:branches.create')->only('create', 'store');
-        $this->middleware('can:branches.edit')->only('edit', 'update');
-        $this->middleware('can:branches.destroy')->only('destroy');
+        $this->middleware('check.permission:branches.index')->only('index');
+        $this->middleware('check.permission:branches.create')->only('create', 'store');
+        $this->middleware('check.permission:branches.edit')->only('edit', 'update');
+        $this->middleware('check.permission:branches.destroy')->only('destroy');
     }
     /**
      * Display a listing of the resource.

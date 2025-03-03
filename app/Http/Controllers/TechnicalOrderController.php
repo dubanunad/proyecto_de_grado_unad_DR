@@ -19,18 +19,18 @@ class TechnicalOrderController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:technicals_orders.index')->only('index');
-        $this->middleware('can:technicals_orders.create')->only('create');
-        $this->middleware('can:technicals_orders.store')->only('store');
-        $this->middleware('can:technicals_orders.edit')->only('edit');
-        $this->middleware('can:technicals_orders.update')->only('update');
-        $this->middleware('can:technicals_orders.destroy')->only('destroy');
-        $this->middleware('can:technicals_orders.my_technical_orders')->only('myTechnicalOrders');
-        $this->middleware('can:technicals_orders.getSerialNumbers')->only('getSerialNumbers');
-        $this->middleware('can:technicals_orders.verification')->only('orderVerification');
-        $this->middleware('can:technicals_orders.process')->only('processOrder');
-        $this->middleware('can:technical_order.verification_process')->only('verificationOrderProcess');
-        $this->middleware('can:technical_orders.reject')->only('orderReject');
+        $this->middleware('check.permission:technicals_orders.index')->only('index');
+        $this->middleware('check.permission:technicals_orders.create')->only('create');
+        $this->middleware('check.permission:technicals_orders.store')->only('store');
+        $this->middleware('check.permission:technicals_orders.edit')->only('edit');
+        $this->middleware('check.permission:technicals_orders.update')->only('update');
+        $this->middleware('check.permission:technicals_orders.destroy')->only('destroy');
+        $this->middleware('check.permission:technicals_orders.my_technical_orders')->only('myTechnicalOrders');
+        $this->middleware('check.permission:technicals_orders.getSerialNumbers')->only('getSerialNumbers');
+        $this->middleware('check.permission:technicals_orders.verification')->only('orderVerification');
+        $this->middleware('check.permission:technicals_orders.process')->only('processOrder');
+        $this->middleware('check.permission:technical_order.verification_process')->only('verificationOrderProcess');
+        $this->middleware('check.permission:technical_orders.reject')->only('orderReject');
     }
     /**
      * Display a listing of the resource.

@@ -14,11 +14,11 @@ class WarehouseController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:warehouses.index')->only('index');
-        $this->middleware('can:warehouses.create')->only('create', 'store');
-        $this->middleware('can:warehouses.edit')->only('edit', 'update');
-        $this->middleware('can:warehouses.destroy')->only('destroy');
-        $this->middleware('can:warehouses.pdf')->only('generatePdf');
+        $this->middleware('check.permission:warehouses.index')->only('index');
+        $this->middleware('check.permission:warehouses.create')->only('create', 'store');
+        $this->middleware('check.permission:warehouses.edit')->only('edit', 'update');
+        $this->middleware('check.permission:warehouses.destroy')->only('destroy');
+        $this->middleware('check.permission:warehouses.pdf')->only('generatePdf');
     }
     /**
      * Display a listing of the resource.

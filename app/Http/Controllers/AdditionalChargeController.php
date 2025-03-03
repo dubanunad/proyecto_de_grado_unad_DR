@@ -12,10 +12,10 @@ class AdditionalChargeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:additionalCharges.index')->only('index');
-        $this->middleware('can:additionalCharges.create')->only('create', 'store');
-        $this->middleware('can:additionalCharges.edit')->only('edit', 'update');
-        $this->middleware('can:additionalCharges.destroy')->only('destroy');
+        $this->middleware('check.permission:additionalCharges.index')->only('index');
+        $this->middleware('check.permission:additionalCharges.create')->only('create', 'store');
+        $this->middleware('check.permission:additionalCharges.edit')->only('edit', 'update');
+        $this->middleware('check.permission:additionalCharges.destroy')->only('destroy');
     }
     /**
      * Display a listing of the resource.

@@ -14,13 +14,13 @@ class CashRegisterController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:cashRegisters.index')->only('index');
-        $this->middleware('can:cashRegisters.create')->only('create', 'store');
-        $this->middleware('can:cashRegisters.edit')->only('edit', 'update');
-        $this->middleware('can:cashRegisters.destroy')->only('destroy');
-        $this->middleware('can:cash_register.status')->only('status');
-        $this->middleware('can:cash_register.open')->only('open');
-        $this->middleware('can:cash_register.close')->only('close');
+        $this->middleware('check.permission:cashRegisters.index')->only('index');
+        $this->middleware('check.permission:cashRegisters.create')->only('create', 'store');
+        $this->middleware('check.permission:cashRegisters.edit')->only('edit', 'update');
+        $this->middleware('check.permission:cashRegisters.destroy')->only('destroy');
+        $this->middleware('check.permission:cash_register.status')->only('status');
+        $this->middleware('check.permission:cash_register.open')->only('open');
+        $this->middleware('check.permission:cash_register.close')->only('close');
     }
     /**
      * Display a listing of the resource.

@@ -22,15 +22,15 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:invoices.index')->only('index');
-        $this->middleware('can:invoices.create')->only('create', 'store');
-        $this->middleware('can:invoices.edit')->only('edit', 'update');
-        $this->middleware('can:invoices.show')->only('show');
-        $this->middleware('can:invoices.destroy')->only('destroy');
-        $this->middleware('can:invoices.generate')->only('generateInvoices');
-        $this->middleware('can:invoices.download-pdf')->only('downloadInvoicePdf');
-        $this->middleware('can:invoices.generate_max_pdf')->only('generatePendingInvoicesPdf');
-        $this->middleware('can:invoices.check-pdf-status')->only('checkPdfStatus');
+        $this->middleware('check.permission:invoices.index')->only('index');
+        $this->middleware('check.permission:invoices.create')->only('create', 'store');
+        $this->middleware('check.permission:invoices.edit')->only('edit', 'update');
+        $this->middleware('check.permission:invoices.show')->only('show');
+        $this->middleware('check.permission:invoices.destroy')->only('destroy');
+        $this->middleware('check.permission:invoices.generate')->only('generateInvoices');
+        $this->middleware('check.permission:invoices.download-pdf')->only('downloadInvoicePdf');
+        $this->middleware('check.permission:invoices.generate_max_pdf')->only('generatePendingInvoicesPdf');
+        $this->middleware('check.permission:invoices.check-pdf-status')->only('checkPdfStatus');
     }
     /**
      * Display a listing of the resource.
@@ -342,7 +342,7 @@ class InvoiceController extends Controller
             ]);
         }
 
-        // Devolver un mensaje indicando que el PDF aún no está listo
+        // Devolver un mensaje indicheck.permissiondo que el PDF aún no está listo
         return response()->json([
             'pdfPath' => null,
             'message' => 'El PDF aún no está listo.',
