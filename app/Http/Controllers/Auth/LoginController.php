@@ -69,12 +69,20 @@ class LoginController extends Controller
         }
 
         // Verificar si el usuario tiene acceso a esta sucursal
-        if (!$user->branches()->where('branch_id', $branchId)->exists()) {
+        $branchRole = $user->branches()->where('branch_id', $branchId)->first();
+
+        if (!$branchRole) {
             return redirect()->back()->withErrors(['branch_id' => 'No tiene acceso a esta sucursal']);
         }
 
+        // Guardar la sucursal y el rol en la sesión
+        session([
+            'branch_id' => $branchId,
+            'current_role_id' => $branchRole->pivot->role_id, // Guardar el role_id
+        ]);
+
+        // Actualizar la sucursal seleccionada en el usuario
         $user->update(['selected_branch_id' => $branchId]);
-        session(['branch_id' => $branchId]);
 
         return redirect()->intended($this->redirectPath());
     }

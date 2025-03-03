@@ -17,10 +17,10 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:users.index')->only('index');
-        $this->middleware('can:users.create')->only('create', 'store');
-        $this->middleware('can:users.edit')->only('edit', 'update');
-        $this->middleware('can:users.destroy')->only('destroy');
+        $this->middleware('check.permission:users.index')->only('index');
+        $this->middleware('check.permission:users.create')->only('create', 'store');
+        $this->middleware('check.permission:users.edit')->only('edit', 'update');
+        $this->middleware('check.permission:users.destroy')->only('destroy');
     }
     /**
      * Display a listing of the resource.
@@ -57,13 +57,14 @@ class UserController extends Controller
                 'address' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:6',
-                'rol' => 'required|exists:roles,id',
-                'branch' => 'required|exists:branches,id',
+                'branches' => 'required|array', // Ahora esperamos un array de sucursales
+                'branches.*.branch_id' => 'required|exists:branches,id', // Cada sucursal debe existir
+                'branches.*.role_id' => 'required|exists:roles,id', // Cada sucursal debe tener un rol válido
             ], [
                 'identity_number.unique' => 'El número de identidad ya está en uso.',
                 'email.unique' => 'El correo electrónico ya está registrado.',
-                'rol.exists' => 'El rol seleccionado no es válido.',
-                'branch.exists' => 'La sucursal seleccionada no es válida.',
+                'branches.*.branch_id.exists' => 'La sucursal seleccionada no es válida.',
+                'branches.*.role_id.exists' => 'El rol seleccionado no es válido.',
             ]);
 
             // Creación del usuario
@@ -77,9 +78,20 @@ class UserController extends Controller
                 'password' => Hash::make($validatedData['password']),
             ]);
 
-            // Asignar rol y sucursal
-            $user->roles()->attach($validatedData['rol']);
-            $user->branches()->attach($validatedData['branch']);
+            // Asignar sucursales y roles
+            foreach ($validatedData['branches'] as $branchData) {
+                $user->branches()->attach($branchData['branch_id'], ['role_id' => $branchData['role_id']]);
+
+                // Obtener el nombre del rol a partir del role_id
+                $role = Role::find($branchData['role_id']);
+
+                if ($role) {
+                    // Asignar el rol al usuario
+                    $user->assignRole($role->name);
+                } else {
+                    throw new \Exception("El rol con ID {$branchData['role_id']} no existe.");
+                }
+            }
 
             Log::info("Usuario creado con éxito: ID {$user->id}, Email: {$user->email}");
 
@@ -94,7 +106,6 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Ocurrió un error inesperado. Inténtalo nuevamente.')->withInput();
         }
     }
-
     /**
      * Display the specified resource.
      */

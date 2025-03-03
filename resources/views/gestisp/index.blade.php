@@ -7,7 +7,7 @@
     <div class="card mt-3">
         <div class="card-head p-3 text-center">
             <p>Hola, <strong>{{ Auth::user()->name }} {{ Auth::user()->last_name }}</strong> Bienvenido a
-                <img src="{{ asset('img/Logo-gestisp-solo-texto.png') }}" alt="GestISP" width="80px">. Estás en la empresa <strong>{{ $branch->name }}</strong></p>
+                <img src="{{ asset('img/Logo-gestisp-solo-texto.png') }}" alt="GestISP" width="80px">. Estás en la empresa <strong>{{ $branch->name }}</strong> Tu Rol es {{ $rol->name }}</p>
         </div>
         <div class="card-body">
             <div class="text-center p-4">

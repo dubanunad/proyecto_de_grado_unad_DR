@@ -68,32 +68,94 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="rol" class="form-label">Rol</label>
-                            <select class="form-control" name="rol" id="rol">
-                                <option value="">Seleccione</option>
-                                @foreach($roles as $rol)
-                                    <option value="{{ $rol->id }}">{{ $rol->name }}</option>
-                                @endforeach
-                            </select>
+                    <div class="col-md-12">
+                        <div id="branch-role-container">
+                            <div class="branch-role-pair mb-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="branch" class="form-label">Sucursal</label>
+                                            <select class="form-control branch-select" name="branches[0][branch_id]">
+                                                <option value="">Seleccione</option>
+                                                @foreach($branches as $branch)
+                                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="mb-3">
+                                            <label for="rol" class="form-label">Rol</label>
+                                            <select class="form-control role-select" name="branches[0][role_id]">
+                                                <option value="">Seleccione</option>
+                                                @foreach($roles as $rol)
+                                                    <option value="{{ $rol->id }}">{{ $rol->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-danger remove-branch-role" style="margin-top: 30px;">X</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="branch" class="form-label">Sucursal</label>
-                            <select class="form-control" name="branch" id="branch">
-                                <option value="">Seleccione</option>
-                                @foreach($branches as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <button type="button" id="add-branch-role" class="btn btn-primary">Agregar otra sucursal</button>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                <button type="submit" class="btn btn-success mt-2">Guardar Usuario</button>
             </form>
         </div>
     </div>
+@endsection
+@section('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let pairIndex = 1;
+
+            document.getElementById('add-branch-role').addEventListener('click', function() {
+                const container = document.getElementById('branch-role-container');
+                const newPair = document.createElement('div');
+                newPair.classList.add('branch-role-pair', 'mb-3');
+                newPair.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="branch" class="form-label">Sucursal</label>
+                            <select class="form-control branch-select" name="branches[${pairIndex}][branch_id]">
+                                <option value="">Seleccione</option>
+                                @foreach($branches as $branch)
+                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="mb-3">
+                <label for="rol" class="form-label">Rol</label>
+                <select class="form-control role-select" name="branches[${pairIndex}][role_id]">
+                                <option value="">Seleccione</option>
+                                @foreach($roles as $rol)
+                <option value="{{ $rol->id }}">{{ $rol->name }}</option>
+                                @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-danger remove-branch-role" style="margin-top: 30px;">X</button>
+        </div>
+    </div>
+`;
+                container.appendChild(newPair);
+                pairIndex++;
+            });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-branch-role')) {
+                    event.target.closest('.branch-role-pair').remove();
+                }
+            });
+        });
+    </script>
 @endsection

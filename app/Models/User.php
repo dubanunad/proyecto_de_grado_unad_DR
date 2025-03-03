@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -49,11 +50,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+
     //Relación con la tabla sucursales
     public function branches()
     {
-        return $this->belongsToMany(Branch::class, 'user_branch'); // user_branch es la tabla pivote
+        return $this->belongsToMany(Branch::class, 'user_branch')->withPivot('role_id');
     }
+
 
     //Relación con clientes
 
@@ -134,15 +137,47 @@ class User extends Authenticatable
 
     //Método para asignar sucursal a un usuario:
 
-    public function assignBranch(string $branchName)
+    public function assignBranch($branchId, $role)
     {
-        $branch = Branch::where('name', $branchName)->first();
+        $branch = Branch::find($branchId);
 
         if ($branch) {
-            $this->branches()->attach($branch);
+            $this->branches()->attach($branch, ['role' => $role]);
         } else {
-            throw new \Exception("Branch with name '{$branchName}' not found.");
+            throw new \Exception("Branch with ID '{$branchId}' not found.");
         }
+    }
+    public function getCurrentRole()
+    {
+        $branchId = session('branch_id'); // Obtener la sucursal actual desde la sesión
+
+        if ($branchId) {
+            // Obtener el rol del usuario en la sucursal actual
+            $branch = $this->branches()->where('id', $branchId)->first();
+            if ($branch) {
+                return $branch->pivot->role_id; // Devuelve el role_id asociado a la sucursal
+            }
+        }
+
+        return null; // Si no hay sucursal seleccionada, devuelve null
+    }
+    public function can($permission, $arguments = [])
+    {
+        // Obtener el rol activo desde la sesión
+        $currentRoleId = session('current_role_id');
+
+        if ($currentRoleId) {
+            // Obtener el rol
+            $role = Role::find($currentRoleId);
+
+            // Verificar si el rol tiene el permiso
+            if ($role && $role->hasPermissionTo($permission)) {
+                return true;
+            }
+        }
+
+        // Si no tiene el permiso, usar la lógica por defecto de Laravel
+        return parent::can($permission, $arguments);
     }
 
 

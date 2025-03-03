@@ -28,7 +28,7 @@ class Branch extends Model
     //Relación con usuarios
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_branch'); // user_branch es la tabla pivote
+        return $this->belongsToMany(User::class, 'user_branch')->withPivot('role_id');
     }
 
     //Relación con Clientes
