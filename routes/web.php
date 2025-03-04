@@ -93,6 +93,8 @@ Route::post('/clients/search', [ClientController::class, 'search'])->name('clien
 // Ruta para exportar clientes a excel
 Route::get('/clients/export', [ClientController::class, 'export'])->name('clients.export');
 
+// Ruta para exportar ordenes
+Route::get('/orders/export', [TechnicalOrderController::class, 'export'])->name('orders.export');
 // Ruta para crear contrato a cliente
 Route::get('contracts/create/{client}', [ContractController::class, 'create'])->name('contracts.create');
 

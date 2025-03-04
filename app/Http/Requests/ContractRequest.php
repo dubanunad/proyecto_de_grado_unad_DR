@@ -39,6 +39,8 @@ class ContractRequest extends FormRequest
             'password_wifi' => 'nullable|string', // La contraseña del WiFi es opcional
             'comment' => 'nullable|string', // El comentario es opcional
             'user_id' => 'nullable|exists:users,id', // El ID del usuario debe existir, por defecto es 1
+            'department' => 'required|string|max:255',
+            'municipality' => 'required|string|max:255',
         ];
     }
     /**

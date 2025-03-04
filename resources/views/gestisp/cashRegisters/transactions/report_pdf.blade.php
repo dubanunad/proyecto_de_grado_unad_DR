@@ -25,6 +25,7 @@
         <th>Método de Pago</th>
         <th>Descripción</th>
         <th>Fecha</th>
+        <th>Usuario</th>
     </tr>
     </thead>
     <tbody>

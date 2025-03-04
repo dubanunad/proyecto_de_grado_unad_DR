@@ -86,12 +86,10 @@
                                     <i class="fas fa-times"></i> Limpiar
                                 </a>
 
-                                <a href="" class="btn btn-success" title="Exportar todas las órdenes a Excel">
-                                    <i class="fas fa-file-excel"></i>
+                                <a href="{{ route('orders.export', request()->all()) }}" class="btn btn-success" title="Exportar órdenes filtradas a Excel">
+                                    <i class="fas fa-file-excel"></i> Exportar
                                 </a>
-                                <a href="" class="btn btn-danger" title="Reporte en PDF">
-                                    <i class="far fa-file-pdf"></i>
-                                </a>
+
 
                             </div>
                         </div>

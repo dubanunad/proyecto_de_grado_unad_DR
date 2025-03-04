@@ -29,6 +29,8 @@ class Contract extends Model
         'activation_date',
         'overdue_invoices_count', //Me cuenta las facturas vencidas
         'user_id',
+        'municipality',
+        'department'
     ];
 
 

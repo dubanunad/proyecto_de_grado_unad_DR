@@ -119,7 +119,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $branches = Branch::all();
+        $roles = Role::all();
+        $userBranches = $user->branches()->withPivot('role_id')->get(); // Sucursales con su rol asignado
+        return view('gestisp.users.edit', compact('user', 'branches', 'roles', 'userBranches'));
     }
 
     /**
@@ -127,7 +130,41 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        // Validación de datos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'number_phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6',
+            'branches' => 'nullable|array',
+            'branches.*.branch_id' => 'exists:branches,id',
+            'branches.*.role_id' => 'exists:roles,id',
+        ]);
+
+        // Actualizar datos del usuario
+        $user->update([
+            'name' => $request->name,
+            'last_name' => $request->last_name,
+            'number_phone' => $request->number_phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'password' => $request->password ? bcrypt($request->password) : $user->password,
+        ]);
+
+        // Actualizar relación de sucursales y roles
+        $user->branches()->detach(); // Eliminar relaciones actuales
+
+        if ($request->has('branches')) {
+            foreach ($request->branches as $branch) {
+                if (!empty($branch['branch_id']) && !empty($branch['role_id'])) {
+                    $user->branches()->attach($branch['branch_id'], ['role_id' => $branch['role_id']]);
+                }
+            }
+        }
+
+        return redirect()->route('users.index')->with('success-update', 'Usuario actualizado correctamente.');
     }
 
     /**

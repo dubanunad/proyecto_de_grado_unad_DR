@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TechnicalOrdersExport;
 use App\Models\Contract;
 use App\Models\Inventory;
 use App\Models\Material;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TechnicalOrderController extends Controller
 {
@@ -502,6 +504,12 @@ class TechnicalOrderController extends Controller
         // Redirigir con un mensaje de éxito
         return redirect()->route('technicals_orders.index')
             ->with('success', 'Orden asignada correctamente.');
+    }
+
+    public function export(Request $request)
+    {
+        //Función para exportar las ordenes a un excel
+        return Excel::download(new TechnicalOrdersExport($request), 'ordenes_tecnicas.xlsx');
     }
 
     /**

@@ -83,7 +83,7 @@ class ContractController extends Controller
 
         // Paginación flexible
         $perPage = $request->get('per_page', 8);
-        $contracts = $query->paginate($perPage);
+        $contracts = $query->simplePaginate($perPage);
 
         return view('gestisp.contracts.index', compact('contracts'));
     }
@@ -175,7 +175,9 @@ class ContractController extends Controller
                 'neighborhood' => $request->neighborhood,
                 'address' => $request->address,
                 'home_type' => $request->home_type,
-                'social_stratum' => $request->social_stratum
+                'social_stratum' => $request->social_stratum,
+                'department' => $request->department,
+                'municipality' => $request->municipality,
             ]);
         }elseif (isset($request->plan_id) || isset($request->permanence_clause)){
             $contract->update([

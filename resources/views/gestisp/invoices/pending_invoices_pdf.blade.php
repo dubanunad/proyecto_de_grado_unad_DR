@@ -83,7 +83,7 @@
                         <p class="interline">Nit: {{ $invoice->contract->branch->nit }}</p>
                         <p class="interline">Tels: {{ $invoice->contract->branch->number_phone }}</p>
                         <p class="interline">{{ $invoice->contract->branch->address }}</p>
-                        <p class="interline">{{ $invoice->contract->branch->municipality }}-{{ $invoice->contract->branch->department }} - {{ $invoice->contract->branch->country }}</p>
+                        <p class="interline">{{ $invoice->contract->branch->municipality ?? 'N/A' }}-{{ $invoice->contract->branch->department ?? 'N/A' }} - {{ $invoice->contract->branch->country }}</p>
                     </td>
                     <td>
                         <table class="table-border-rounded">
@@ -137,7 +137,7 @@
                 </tr>
                 <tr>
                     <td colspan="5" class="border-bottom">DIRECCIÓN {{ $invoice->contract->address }} Barrio: {{ $invoice->contract->neighborhood }}</td>
-                    <td colspan="2" class="border-bottom">{{ $invoice->contract->branch->municipality }}-{{ $invoice->contract->branch->department }}</td>
+                    <td colspan="2" class="border-bottom">{{ $invoice->contract->municipality ?? 'N/A' }}-{{ $invoice->contract->department ?? 'N/A' }}</td>
                     <td class="border-bottom">TELÉFONO {{ $invoice->contract->client->number_phone }}</td>
                 </tr>
                 </tbody>

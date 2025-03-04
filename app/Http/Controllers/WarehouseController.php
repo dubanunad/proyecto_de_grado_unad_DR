@@ -18,7 +18,7 @@ class WarehouseController extends Controller
         $this->middleware('check.permission:warehouses.create')->only('create', 'store');
         $this->middleware('check.permission:warehouses.edit')->only('edit', 'update');
         $this->middleware('check.permission:warehouses.destroy')->only('destroy');
-        $this->middleware('check.permission:warehouses.pdf')->only('generatePdf');
+        $this->middleware('check.permission:warehouse.pdf')->only('generatePdf');
     }
     /**
      * Display a listing of the resource.

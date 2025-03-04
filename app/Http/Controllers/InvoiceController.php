@@ -45,7 +45,7 @@ class InvoiceController extends Controller
             ->where('clients.branch_id', $branchId) // Filtra por sucursal
             ->where('contracts.branch_id', $branchId) // Filtra por sucursal
             ->select('invoices.*') // Solo selecciona columnas de la tabla invoices
-            ->paginate(10); // Paginación
+            ->simplePaginate(10); // Paginación
 
 
         return view('gestisp.invoices.index', compact('invoices'));

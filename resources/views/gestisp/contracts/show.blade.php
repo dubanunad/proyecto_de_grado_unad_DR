@@ -139,6 +139,15 @@
                                         @csrf
                                         @method('put')
                                         <div class="form-group">
+                                            <label for="">Departamento:</label>
+                                            <input type="text" name="department" class="form-control" value="{{ $contract->department ?? 'N/A' }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="">Municipio:</label>
+                                            <input type="text" name="municipality" class="form-control" value="{{ $contract->municipality ?? 'N/A' }}">
+                                        </div>
+                                        <div class="form-group">
                                             <label for="">Barrio:</label>
                                             <input type="text" name="neighborhood" class="form-control" value="{{ $contract->neighborhood }}">
                                         </div>
@@ -180,6 +189,8 @@
 
                 </div>
                 <div class="card-body row">
+                    <p class="col-6"><strong>Departamento:</strong> {{ $contract->department ?? 'N/A' }}</p>
+                    <p class="col-6"><strong>Municipio:</strong> {{ $contract->municipality ?? 'N/A' }}</p>
                     <p class="col-6"><strong>Barrio:</strong> {{ $contract->neighborhood }}</p>
                     <p class="col-6"><strong>Dirección:</strong> {{ $contract->address }}</p>
                     <p class="col-6"><strong>Tipo de vivienda:</strong> {{ $contract->home_type }}</p>

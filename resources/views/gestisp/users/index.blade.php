@@ -14,7 +14,7 @@
             {{ session('success-create') }}
         </div>
     @elseif(session('success-update'))
-        <div class="alert alert-warning">
+        <div class="alert alert-success">
             {{ session('success-update') }}
         </div>
     @elseif(session('success-delete'))
@@ -51,7 +51,7 @@
                         <td>{{ $user->last_name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->number_phone }}</td>
-                        <td class="text-right"><a class="btn btn-warning" href="" title="Editar Plan"><i class="fas fa-pencil-alt"></i> Modificar</a></a></td>
+                        <td class="text-right"><a class="btn btn-warning" href="{{ route('users.edit', $user) }}" title="Editar usuario"><i class="fas fa-pencil-alt"></i> Modificar</a></a></td>
                     </tr>
                 @endforeach
                 </tbody>

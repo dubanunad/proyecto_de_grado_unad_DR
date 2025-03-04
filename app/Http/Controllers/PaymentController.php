@@ -94,7 +94,11 @@ class PaymentController extends Controller
 
         // Filtrar por la sucursal actual si está configurada en la sesión
         if (session()->has('branch_id')) {
-            $query->where('branch_id', session('branch_id'));
+            $branchId = session('branch_id');
+
+            $query->whereHas('invoice.contract.branch', function ($query) use ($branchId) {
+                $query->where('id', $branchId);
+            });
         }
 
         // Verificar si hay filtros adicionales para la búsqueda

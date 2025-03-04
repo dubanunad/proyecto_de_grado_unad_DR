@@ -34,7 +34,7 @@ class MaterialMovementController extends Controller
     public function index()
     {
         $materials = Material::all();
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::where('branch_id', session('branch_id'))->get();
         return view('gestisp.materials.movements.index', compact('materials', 'warehouses'));
     }
 
@@ -364,11 +364,17 @@ class MaterialMovementController extends Controller
 
     public function history(Request $request)
     {
+        $branchId = session('branch_id');
         // Inicializar la consulta base con las relaciones necesarias
         $query = MaterialMovement::with(['warehouseOrigin', 'warehouseDestination', 'material', 'user']);
 
-        // Inicializar la consulta base con las relaciones necesarias
-        $query = MaterialMovement::with(['warehouseOrigin', 'warehouseDestination', 'material', 'user']);
+        // Inicializar la consulta base con las relaciones necesarias y filtrando por la sucursal
+        $query = MaterialMovement::with(['warehouseOrigin', 'warehouseDestination', 'material', 'user'])
+            ->whereHas('warehouseOrigin', function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })->orWhereHas('warehouseDestination', function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            });
 
         // Aplicar filtro por campo específico si se ha establecido
         if ($request->filled('filter_field') && $request->filled('filter_value')) {

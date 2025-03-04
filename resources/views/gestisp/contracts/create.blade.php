@@ -16,6 +16,7 @@
                     <div class="card-head text-center mt-3">
                         <h4 class="text-info">DATOS DE LA RESIDENCIA</h4>
                     </div>
+
                     <div class="card-body">
                         <div class="row">
                             <!-- Barrio -->
@@ -25,6 +26,30 @@
                                        placeholder="Ingrese el nombre del barrio" minlength="5" maxlength="255"
                                        value="{{ old('neighborhood') }}">
                                 @error('neighborhood')
+                                <span class="text-danger">
+                                    <span>* {{ $message }}</span>
+                                </span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="department">Departamento</label>
+                                <input type="text" class="form-control" id="department" name="department"
+                                       placeholder="Ingrese el nombre del departamento" minlength="5" maxlength="255"
+                                       value="{{ old('department') }}">
+                                @error('department')
+                                <span class="text-danger">
+                                    <span>* {{ $message }}</span>
+                                </span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="department">Municipio</label>
+                                <input type="text" class="form-control" id="municipality" name="municipality"
+                                       placeholder="Ingrese el nombre del Municipio" minlength="5" maxlength="255"
+                                       value="{{ old('municipality') }}">
+                                @error('municipality')
                                 <span class="text-danger">
                                     <span>* {{ $message }}</span>
                                 </span>
