@@ -489,6 +489,53 @@ return [
         ],
 
         [
+            'text' => 'Aprovisionamiento',
+            'icon' => 'fas  fa-wifi',
+            'submenu' => [
+                [
+                    'text' => 'Routers',
+                    'route' => 'technicals_orders.index',
+                    'active' => ['gestisp/technicals_orders*'],
+                    'icon' => 'fas  fa-ethernet',
+                    'can' => 'technicals_orders.index',
+                ],
+                [
+                    'text' => 'PPPoE',
+                    'route' => 'technicals_orders.my_technical_orders',
+                    'active' => ['gestisp/technicals_orders*'],
+                    'icon' => 'fas  fa-user-check',
+                    'can' => 'technicals_orders.my_technical_orders',
+                ],
+                [
+                    'text' => 'OLT´s',
+                    'route' => 'olts.index',
+                    'active' => ['gestisp/olts*'],
+                    'icon' => 'fas  fa-server',
+                ],
+                [
+                    'text' => 'ONT´s',
+                    'icon' => 'fas  fa-hdd',
+                    'submenu' =>[
+                        [
+                            'text' => 'Por Autorizar',
+                            'route' => 'onts.no-authorized',
+                            'icon' => 'fas  fa-ban',
+                            'active' => ['gestisp/onts/no-autorized'],
+                        ],
+                        [
+                            'text' => 'Autorizadas',
+                            'route' => 'onts.authorized',
+                            'icon' => 'fas  fa-check-square',
+                            'active' => ['gestisp/onts/authorized'],
+                        ],
+                    ]
+                ],
+            ],
+
+
+        ],
+
+        [
             'text' => 'Gestión del sistema',
             'icon' => 'fas  fa-cogs',
             'submenu' => [

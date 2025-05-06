@@ -66,4 +66,14 @@ class Branch extends Model
         return $this->hasMany(Warehouse::class);
     }
 
+    //Relación con olts
+    public function olts(){
+        return $this->hasMany(Olt::class);
+    }
+
+    //Relación con onts
+    public function onts(){
+        return $this->hasMany(Ont::class);
+    }
+
 }

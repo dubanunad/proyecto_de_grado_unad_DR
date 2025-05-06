@@ -72,5 +72,11 @@ class Contract extends Model
         return $this->belongsTo(Branch::class);
     }
 
+    //Relacion con ont
+    public function ont()
+    {
+        return $this->hasOne(Ont::class);
+    }
+
 
 }

@@ -8,6 +8,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MaterialMovementController;
+use App\Http\Controllers\OltController;
+use App\Http\Controllers\OntController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TechnicalOrderController;
 use App\Http\Controllers\WarehouseController;
@@ -83,9 +85,14 @@ Route::namespace('App\Http\Controllers')->prefix('gestisp')->group(function () {
     //Roles
     Route::resource('roles', 'RoleController')->names('roles');
 
+    //Olts
+    Route::resource('olts', 'OltController')->names('olts');
 
 });
-
+Route::get('/onts/authorized', [OntController::class , 'authorized_ont_index'])->name('onts.authorized');
+//Listar onts no autorizada
+Route::get('/onts/no-authorized', [OntController::class , 'no_authorized_ont_index'])->name('onts.no-authorized');
+Route::get('/olts/{olt}/onts-autofind', [OltController::class, 'ontsAutofind']);
 // Ruta del buscador de clientes
 Route::get('/clients/search', [ClientController::class, 'searchView'])->name('clients.searchView');
 Route::post('/clients/search', [ClientController::class, 'search'])->name('clients.search');
