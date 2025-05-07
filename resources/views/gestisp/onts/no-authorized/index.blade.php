@@ -51,6 +51,53 @@
         </div>
     </div>
 
+    <!-- Modal de Activación de ONT -->
+    <div class="modal fade" id="activarOntModal" tabindex="-1" role="dialog" aria-labelledby="activarOntModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="formActivarOnt" method="POST" action="">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Activar ONT</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Datos de la ONT -->
+                        <input type="hidden" name="ont_sn" id="modalOntSn">
+                        <div class="form-group">
+                            <label>SN</label>
+                            <input type="text" class="form-control" id="modalOntSnView" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Marca</label>
+                            <input type="text" class="form-control" id="modalVendor" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo</label>
+                            <input type="text" class="form-control" id="modalModel" disabled>
+                        </div>
+                        <!-- Datos adicionales -->
+                        <div class="form-group">
+                            <label>Nombre del Cliente</label>
+                            <input type="text" name="client_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Plan</label>
+                            <input type="text" name="service_plan" class="form-control" required>
+                        </div>
+                        <!-- Agrega los campos que necesites -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Activar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.getElementById('olt').addEventListener('change', function () {
             const oltId = this.value;
@@ -79,7 +126,16 @@
                     <td>${ont.equipment_id}</td>
                     <td>${ont.fspon}</td>
                     <td>${ont.autofind_time}</td>
-                    <td><a href="" title="Activar ONT" class="btn btn-success"><i class="fas fa-check-square"></i></a></td>
+                    <td>
+                  <button
+                    class="btn btn-success activar-btn"
+                    data-sn="${ont.ont_sn}"
+                    data-vendor="${ont.vendor}"
+                    data-model="${ont.equipment_id}"
+                    title="Activar ONT">
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                   </td>
                 </tr>`;
                         tbody.innerHTML += row;
                     });
@@ -87,6 +143,24 @@
                 .catch(error => {
                     tbody.innerHTML = `<tr><td colspan="5" class="text-danger">Error al cargar ONTs: ${error}</td></tr>`;
                 });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.activar-btn')) {
+                const btn = e.target.closest('.activar-btn');
+                const sn = btn.getAttribute('data-sn');
+                const vendor = btn.getAttribute('data-vendor');
+                const model = btn.getAttribute('data-model');
+
+                // Llenar los datos en el modal
+                document.getElementById('modalOntSn').value = sn;
+                document.getElementById('modalOntSnView').value = sn;
+                document.getElementById('modalVendor').value = vendor;
+                document.getElementById('modalModel').value = model;
+
+                // Mostrar el modal
+                $('#activarOntModal').modal('show');
+            }
         });
     </script>
 @endsection
